@@ -1,0 +1,25 @@
+version: '2'
+services:
+  web:
+    build: ./web
+    ports:
+      - "8000:80"
+    links:
+      - db
+    volumes:
+      - ./var/winofy/Web/public:/var/winofy/public
+
+  db:
+    build: ./db
+    environment:
+      MYSQL_ROOT_PASSWORD: root_pass
+      MYSQL_DATABASE: winofy
+      MYSQL_USER: winofy
+      MYSQL_PASSWORD: pass
+      MYSQL_HOST: ""
+
+    mem_limit: 1000000000
+    volumes:
+      - ./db/init.d:/docker-entrypoint-initdb.d
+    ports:
+      - "33333:3306"
