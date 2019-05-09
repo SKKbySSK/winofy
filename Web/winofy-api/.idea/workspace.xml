@@ -1,16 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="fe4edebb-8827-4030-98ff-3c52acc50233" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Connection.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/LoginRouting.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/RegisterRouting.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/User.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WinofyRouting.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/main.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../winofy-db/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../winofy-db/.idea/workspace.xml" afterDir="false" />
-    </list>
+    <list default="true" id="fe4edebb-8827-4030-98ff-3c52acc50233" name="Default Changelist" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -21,6 +12,7 @@
     <session id="-1740941077">
       <usages-collector id="statistics.lifecycle.project">
         <counts>
+          <entry key="project.closed" value="1" />
           <entry key="project.open.time.0" value="1" />
           <entry key="project.opened" value="1" />
         </counts>
