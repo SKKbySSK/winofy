@@ -1,4 +1,4 @@
-package internal
+package main
 
 import (
 	"crypto/rand"
@@ -7,7 +7,6 @@ import (
 	"golang.org/x/crypto/bcrypt"
 	"log"
 	"time"
-	"../results"
 )
 
 type LoginRouting struct {
@@ -15,38 +14,33 @@ type LoginRouting struct {
 }
 
 func (login *LoginRouting) Route(ws *restful.WebService) {
-	ws.Route(ws.POST("internal/login").To(login.registerFunc))
-}
-
-
-func (login *LoginRouting) getFailedResult() *results.LoginResult {
-	res := new(results.LoginResult)
-	res.Success = false
-	res.Token = ""
-
-	return res
+	ws.Route(ws.POST("/login").To(login.registerFunc))
 }
 
 func (login *LoginRouting) registerFunc(request *restful.Request, response *restful.Response) {
-
-	values, err := getParameters(request, []string{ "username", "password" })
+	name, err := request.BodyParameter("username")
 
 	//FIXME variable "name" can inject SQL
 
 	if err != nil {
-		writeJsonResponse(response, login.getFailedResult(), 400)
+		response.WriteHeader(400)
 		log.Println(err)
 		return
 	}
 
-	name := values[0]
-	pass := values[1]
+	pass, err := request.BodyParameter("password")
+
+	if err != nil {
+		response.WriteHeader(400)
+		log.Println(err)
+		return
+	}
 
 	q := "SELECT Username, Password FROM Users WHERE Username = '" + name + "'"
 	rows, err := sqlConnection.Query(q)
 
 	if err != nil {
-		writeJsonResponse(response, login.getFailedResult(), 400)
+		response.WriteHeader(400)
 		log.Println(err)
 		return
 	}
@@ -55,14 +49,14 @@ func (login *LoginRouting) registerFunc(request *restful.Request, response *rest
 	defer rows.Close()
 
 	if !rows.Next() {
-		writeJsonResponse(response, login.getFailedResult(), 200)
+		response.WriteHeader(200)
 		return
 	}
 
 	err = rows.Scan(&rname, &hashed)
 
 	if err != nil {
-		writeJsonResponse(response, login.getFailedResult(), 500)
+		response.WriteHeader(400)
 		log.Println(err)
 		return
 	}
@@ -71,19 +65,16 @@ func (login *LoginRouting) registerFunc(request *restful.Request, response *rest
 		token, err := login.setOrGetToken(name)
 
 		if err != nil {
-			writeJsonResponse(response, login.getFailedResult(), 500)
+			response.WriteHeader(500)
 			log.Println(err)
 			return
 		}
 
-		res := new(results.LoginResult)
-		res.Success = true
-		res.Token = token
-		writeJsonResponse(response, res, 200)
+		response.Write([]byte(token))
 		return
 	}
 
-	writeJsonResponse(response, login.getFailedResult(), 200)
+	response.WriteHeader(200)
 }
 
 func (login *LoginRouting) setOrGetToken(username string) (string, error) {
@@ -97,10 +88,15 @@ func (login *LoginRouting) setOrGetToken(username string) (string, error) {
 
 	var token string
 	var creation time.Time
+	now := time.Now()
 
 	for rows.Next() {
 		rows.Scan(&username, &creation, &token)
-		return token, nil
+
+		//Token expires in 72 hours
+		if now.Sub(creation).Hours() <= 72 {
+			return token, nil
+		}
 	}
 
 	token = login.generateToken()

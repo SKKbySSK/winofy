@@ -7,10 +7,13 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jmoiron/sqlx"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"os"
-	"./internal"
+	"time"
 )
+
+var sqlConnection *sqlx.DB
 
 func main()  {
 	connection := parseConnectionFile()
@@ -19,15 +22,10 @@ func main()  {
 		return
 	}
 
-	sqlConnection := connectToDatabase(connection)
-	internal.SetSqlConnection(sqlConnection)
+	sqlConnection = connectToDatabase(connection)
 	defer sqlConnection.Close()
 
-	routings := []WinofyRouting{
-		new(internal.RegisterRouting),
-		new(internal.LoginRouting),
-		new(internal.ValidRouting),
-	}
+	routings := []WinofyRouting{new(RegisterRouting), new(LoginRouting)}
 
 	ws := new(restful.WebService)
 	for _, r := range routings {
@@ -68,6 +66,40 @@ func parseConnectionFile() *Connection {
 	}
 
 	return connection
+}
+
+func isAuthorized(request *restful.Request) bool {
+
+	//FIXME variable "token" can inject SQL
+	token := request.HeaderParameter("token")
+
+	q := "SELECT Creation FROM Tokens WHERE Token = '" + token + "'"
+	rows, err := sqlConnection.Query(q)
+
+	if err != nil {
+		log.Println("Error occured while checking auhorizing status")
+		log.Println(err)
+		return false
+	}
+
+	defer rows.Close()
+
+	now := time.Now()
+	var creation time.Time
+	if rows.Next() {
+		err = rows.Scan(&creation)
+
+		if err != nil {
+			log.Println("Error occured while checking auhorizing status")
+			log.Println(err)
+			return false
+		}
+
+		//Token expires in 72 hours
+		return now.Sub(creation).Hours() <= 72
+	}
+
+	return false
 }
 
 func connectToDatabase(connection *Connection) *sqlx.DB {
