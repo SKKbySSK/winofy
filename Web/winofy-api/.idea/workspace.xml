@@ -1,7 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="fe4edebb-8827-4030-98ff-3c52acc50233" name="Default Changelist" comment="" />
+    <list default="true" id="fe4edebb-8827-4030-98ff-3c52acc50233" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/internal/Routing.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/internal/ValidRouting.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/results/LoginResult.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/results/RegisterResult.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/results/TokenValidationResult.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Mobile/Winofy/Winofy.Android/MainActivity.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../../Mobile/Winofy/Winofy.Android/MainActivity.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Mobile/Winofy/Winofy.sln" beforeDir="false" afterPath="$PROJECT_DIR$/../../Mobile/Winofy/Winofy.sln" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Mobile/Winofy/Winofy/Account/LoginData.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../../Mobile/Winofy/Winofy/Account/LoginData.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Mobile/Winofy/Winofy/Pages/LoginPage.xaml" beforeDir="false" afterPath="$PROJECT_DIR$/../../Mobile/Winofy/Winofy/Pages/LoginPage.xaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Mobile/Winofy/Winofy/Pages/LoginPage.xaml.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../../Mobile/Winofy/Winofy/Pages/LoginPage.xaml.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Mobile/Winofy/Winofy/ViewModels/LoginViewModel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../../Mobile/Winofy/Winofy/ViewModels/LoginViewModel.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Mobile/Winofy/Winofy/Winofy.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/../../Mobile/Winofy/Winofy/Winofy.csproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LoginRouting.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/LoginRouting.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/RegisterRouting.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/RegisterRouting.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/main.go" afterDir="false" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -14,66 +31,89 @@
         <counts>
           <entry key="project.closed" value="1" />
           <entry key="project.open.time.0" value="1" />
-          <entry key="project.opened" value="1" />
+          <entry key="project.open.time.6" value="1" />
+          <entry key="project.opened" value="2" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
         <counts>
-          <entry key="go" value="8" />
+          <entry key="go" value="13" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.open">
         <counts>
-          <entry key="Go" value="8" />
+          <entry key="Go" value="13" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="go" value="4996" />
+          <entry key="go" value="6933" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="Go" value="4996" />
+          <entry key="Go" value="6933" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.go.postfix.template.usages.trigger">
         <counts>
+          <entry key=".append" value="2" />
           <entry key=".len" value="1" />
         </counts>
       </usages-collector>
     </session>
   </component>
   <component name="FileEditorManager">
-    <leaf>
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Connection.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="144">
-              <caret line="8" selection-start-line="8" selection-end-line="8" />
+            <state>
+              <caret column="12" lean-forward="true" selection-start-column="12" selection-end-column="12" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/RegisterRouting.go">
+        <entry file="file://$PROJECT_DIR$/internal/RegisterRouting.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="309">
-              <caret line="69" selection-start-line="69" selection-end-line="69" />
+            <state relative-caret-position="177">
+              <caret line="21" lean-forward="true" selection-start-line="21" selection-end-line="21" />
               <folding>
-                <element signature="e#14#65#0" expanded="true" />
+                <element signature="e#14#95#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/LoginRouting.go">
+        <entry file="file://$PROJECT_DIR$/results/LoginResult.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="294">
-              <caret line="95" selection-start-line="95" selection-end-line="98" selection-end-column="9" />
+            <state relative-caret-position="108">
+              <caret line="6" lean-forward="true" selection-start-line="6" selection-end-line="6" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/internal/LoginRouting.go">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="1310">
+              <caret line="87" lean-forward="true" selection-start-line="87" selection-end-line="87" />
               <folding>
-                <element signature="e#14#65#0" expanded="true" />
+                <element signature="e#14#125#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/internal/Routing.go">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="276">
+              <caret line="20" column="49" selection-start-line="20" selection-start-column="49" selection-end-line="20" selection-end-column="49" />
+              <folding>
+                <element signature="e#18#77#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -89,21 +129,42 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/WinofyRouting.go">
+        <entry file="file://$PROJECT_DIR$/main.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="108">
-              <caret line="6" column="1" selection-start-line="6" selection-start-column="1" selection-end-line="6" selection-end-column="1" />
+            <state relative-caret-position="493">
+              <caret line="31" column="33" lean-forward="true" selection-start-line="31" selection-start-column="33" selection-end-line="31" selection-end-column="33" />
+              <folding>
+                <element signature="e#14#192#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/main.go">
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/results/RegisterResult.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="286">
-              <caret line="112" column="35" lean-forward="true" selection-start-line="112" selection-start-column="35" selection-end-line="112" selection-end-column="35" />
+            <state relative-caret-position="126">
+              <caret line="7" column="51" lean-forward="true" selection-start-line="7" selection-start-column="51" selection-end-line="7" selection-end-column="51" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/results/TokenValidationResult.go">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="90">
+              <caret line="5" lean-forward="true" selection-start-line="5" selection-end-line="5" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/internal/ValidRouting.go">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="702">
+              <caret line="39" lean-forward="true" selection-start-line="39" selection-end-line="39" />
               <folding>
-                <element signature="e#14#101#0" expanded="true" />
+                <element signature="e#18#73#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -130,9 +191,18 @@
         <option value="$PROJECT_DIR$/User.go" />
         <option value="$PROJECT_DIR$/Register.go" />
         <option value="$PROJECT_DIR$/Login.go" />
-        <option value="$PROJECT_DIR$/LoginRouting.go" />
+        <option value="$PROJECT_DIR$/Results/RegisterResult.go" />
+        <option value="$PROJECT_DIR$/results/RegisterResult.go" />
+        <option value="$PROJECT_DIR$/results/LoginResult.go" />
         <option value="$PROJECT_DIR$/RegisterRouting.go" />
+        <option value="$PROJECT_DIR$/LoginRouting.go" />
+        <option value="$PROJECT_DIR$/results/TokenValidationResult.go" />
+        <option value="$PROJECT_DIR$/ValidRouting.go" />
         <option value="$PROJECT_DIR$/main.go" />
+        <option value="$PROJECT_DIR$/internal/ValidRouting.go" />
+        <option value="$PROJECT_DIR$/internal/RegisterRouting.go" />
+        <option value="$PROJECT_DIR$/internal/LoginRouting.go" />
+        <option value="$PROJECT_DIR$/internal/Routing.go" />
       </list>
     </option>
   </component>
@@ -167,6 +237,16 @@
               <item name="winofy-api" type="462c0819:PsiDirectoryNode" />
               <item name="builds" type="462c0819:PsiDirectoryNode" />
             </path>
+            <path>
+              <item name="winofy-api" type="b2602c69:ProjectViewProjectNode" />
+              <item name="winofy-api" type="462c0819:PsiDirectoryNode" />
+              <item name="internal" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="winofy-api" type="b2602c69:ProjectViewProjectNode" />
+              <item name="winofy-api" type="462c0819:PsiDirectoryNode" />
+              <item name="results" type="462c0819:PsiDirectoryNode" />
+            </path>
           </expand>
           <select />
         </subPane>
@@ -181,6 +261,12 @@
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="settings.editor.selected.configurable" value="preferences.lookFeel" />
+  </component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/internal" />
+      <recent name="$PROJECT_DIR$" />
+    </key>
   </component>
   <component name="RunDashboard">
     <option name="ruleStates">
@@ -198,13 +284,9 @@
     <frame x="0" y="0" width="1680" height="1050" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info id="Favorites" side_tool="true" />
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.24969475" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.25274727" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
-      <window_info anchor="bottom" id="Database Changes" show_stripe_button="false" />
-      <window_info anchor="bottom" id="Version Control" show_stripe_button="false" />
-      <window_info anchor="bottom" id="Terminal" sideWeight="0.6654457" visible="true" weight="0.32959184" />
-      <window_info anchor="bottom" id="Event Log" sideWeight="0.33455434" side_tool="true" visible="true" weight="0.32959184" />
+      <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.32959184" />
       <window_info anchor="bottom" id="Run" order="2" />
@@ -212,10 +294,14 @@
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" />
-      <window_info anchor="right" id="Database" />
+      <window_info anchor="bottom" id="Database Changes" order="7" show_stripe_button="false" />
+      <window_info anchor="bottom" id="Version Control" order="8" show_stripe_button="false" />
+      <window_info anchor="bottom" id="Terminal" order="9" sideWeight="0.66483516" visible="true" weight="0.32959184" />
+      <window_info anchor="bottom" id="Event Log" order="10" sideWeight="0.33516484" side_tool="true" visible="true" weight="0.32959184" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
+      <window_info anchor="right" id="Database" order="3" />
     </layout>
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -239,27 +325,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Connection.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="144">
-          <caret line="8" selection-start-line="8" selection-end-line="8" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/WinofyRouting.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="108">
           <caret line="6" column="1" selection-start-line="6" selection-start-column="1" selection-end-line="6" selection-end-column="1" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/RegisterRouting.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="309">
-          <caret line="69" selection-start-line="69" selection-end-line="69" />
-          <folding>
-            <element signature="e#14#65#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -270,22 +339,80 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/LoginRouting.go">
+    <entry file="file://$PROJECT_DIR$/results/LoginResult.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="294">
-          <caret line="95" selection-start-line="95" selection-end-line="98" selection-end-column="9" />
-          <folding>
-            <element signature="e#14#65#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="108">
+          <caret line="6" lean-forward="true" selection-start-line="6" selection-end-line="6" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/results/RegisterResult.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="126">
+          <caret line="7" column="51" lean-forward="true" selection-start-line="7" selection-start-column="51" selection-end-line="7" selection-end-column="51" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/results/TokenValidationResult.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="90">
+          <caret line="5" lean-forward="true" selection-start-line="5" selection-end-line="5" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Connection.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <caret column="12" lean-forward="true" selection-start-column="12" selection-end-column="12" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/main.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="286">
-          <caret line="112" column="35" lean-forward="true" selection-start-line="112" selection-start-column="35" selection-end-line="112" selection-end-column="35" />
+        <state relative-caret-position="493">
+          <caret line="31" column="33" lean-forward="true" selection-start-line="31" selection-start-column="33" selection-end-line="31" selection-end-column="33" />
           <folding>
-            <element signature="e#14#101#0" expanded="true" />
+            <element signature="e#14#192#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/internal/LoginRouting.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1310">
+          <caret line="87" lean-forward="true" selection-start-line="87" selection-end-line="87" />
+          <folding>
+            <element signature="e#14#125#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/internal/ValidRouting.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="702">
+          <caret line="39" lean-forward="true" selection-start-line="39" selection-end-line="39" />
+          <folding>
+            <element signature="e#18#73#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/internal/RegisterRouting.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="177">
+          <caret line="21" lean-forward="true" selection-start-line="21" selection-end-line="21" />
+          <folding>
+            <element signature="e#14#95#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/internal/Routing.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="276">
+          <caret line="20" column="49" selection-start-line="20" selection-start-column="49" selection-end-line="20" selection-end-column="49" />
+          <folding>
+            <element signature="e#18#77#0" expanded="true" />
           </folding>
         </state>
       </provider>
