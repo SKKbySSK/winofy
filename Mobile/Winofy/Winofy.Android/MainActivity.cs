@@ -21,6 +21,7 @@ namespace Winofy.Droid
             Xfx.XfxControls.Init();
             Xamarin.Essentials.Platform.Init(this, savedInstanceState);
             global::Xamarin.Forms.Forms.Init(this, savedInstanceState);
+            Acr.UserDialogs.UserDialogs.Init(this);
             FFImageLoading.Forms.Platform.CachedImageRenderer.Init(true);
             LoadApplication(new App());
         }

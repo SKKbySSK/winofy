@@ -25,6 +25,7 @@
     <PackageReference Include="Xfx.Controls" Version="1.2.1" />
     <PackageReference Include="Forms.Controls.FlexButton" Version="0.9.1" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
+    <PackageReference Include="Acr.UserDialogs" Version="7.0.4" />
   </ItemGroup>
 
   <ItemGroup>
@@ -42,5 +43,8 @@
     <Folder Include="ViewModels\" />
     <Folder Include="ViewModels\Abstracts\" />
     <Folder Include="ViewModels\Converters\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Winofy.Connection\Winofy.Connection.csproj" />
   </ItemGroup>
 </Project>

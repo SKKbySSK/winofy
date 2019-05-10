@@ -22,7 +22,8 @@
             </Grid.RowDefinitions>
             
             <StackLayout HorizontalOptions="Center" VerticalOptions="Center">
-                <Label FontSize="30" Text="Winofy"/>
+                <Label FontSize="30" Text="Winofy" HorizontalTextAlignment="Center"/>
+                <Label Text="{Binding ErrorMessage}" TextColor="Red" HorizontalTextAlignment="Center"/>
                 <ActivityIndicator IsRunning="{Binding IsAuthorizing}"/>
             </StackLayout>
             
@@ -35,7 +36,7 @@
                     
                     <BoxView Margin="10, 20, 10, 20" HeightRequest="1" Color="Gray"/>
                     
-                    <flex:FlexButton Text="Register" BackgroundColor="Purple" CornerRadius="25" HeightRequest="50" ForegroundColor="White" HighlightBackgroundColor="Purple" HighlightForegroundColor="Gray"/>
+                    <flex:FlexButton Text="Register" BackgroundColor="Purple" CornerRadius="25" HeightRequest="50" ForegroundColor="White" HighlightBackgroundColor="Purple" HighlightForegroundColor="Gray" ClickedCommand="{Binding RegisterCommand}"/>
                 </StackLayout>
             </Frame>
         </Grid>

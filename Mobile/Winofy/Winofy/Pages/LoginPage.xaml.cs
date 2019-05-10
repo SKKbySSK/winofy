@@ -7,15 +7,24 @@ using System.Threading.Tasks;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 using Winofy.Extensions;
+using Winofy.ViewModels;
 
 namespace Winofy.Pages
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class LoginPage : ContentPage
     {
+        private LoginViewModel ViewModel => (LoginViewModel)Resources["viewModel"];
+
         public LoginPage()
         {
             InitializeComponent();
+            ViewModel.Authorized += ViewModel_Authorized;
+        }
+
+        async void ViewModel_Authorized(object sender, EventArgs e)
+        {
+            await Acr.UserDialogs.UserDialogs.Instance.AlertAsync("Authorized");
         }
     }
 }

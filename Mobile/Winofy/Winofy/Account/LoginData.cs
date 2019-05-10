@@ -9,15 +9,15 @@ namespace Winofy.Account
     {
         public LoginData() { }
 
-        public LoginData(string authorizingToken, DateTime lastLogin)
+        public LoginData(string username, string authorizingToken)
         {
+            Username = username;
             AuthorizingToken = authorizingToken;
-            LastLogin = lastLogin;
         }
 
         public string AuthorizingToken { get; set; }
 
-        public DateTime LastLogin { get; set; }
+        public string Username { get; set; }
     }
 
     public partial class LoginData
