@@ -33,7 +33,7 @@ func (not *NotificationRouting) putFunc(request *restful.Request, response *rest
 		return
 	}
 
-	values, err := getBodyParameters(request, []string{ "device_token", "device_type" })
+	values, err := getBodyParameters(request, []string{ "device_token", "type" })
 	dev_token := values[0]
 	dev_type := values[1]
 
@@ -42,7 +42,7 @@ func (not *NotificationRouting) putFunc(request *restful.Request, response *rest
 		return
 	}
 
-	rows, err := sqlConnection.Query("SELECT DeviceToken, DeviceType FROM Notifications WHERE Username = ?", *username)
+	rows, err := sqlConnection.Query("SELECT DeviceToken, NotificationType FROM Notifications WHERE Username = ?", *username)
 	defer rows.Close()
 
 	if err != nil {
@@ -53,6 +53,7 @@ func (not *NotificationRouting) putFunc(request *restful.Request, response *rest
 	var (
 		r_token string
 		r_type string
+		update bool
 	)
 
 	for rows.Next() {
@@ -62,9 +63,27 @@ func (not *NotificationRouting) putFunc(request *restful.Request, response *rest
 			writeJsonResponse(response, not.getResult(true), 200)
 			return
 		}
+
+		if r_token == dev_token {
+			update = true
+			break
+		}
 	}
 
-	exec := "INSERT INTO Notifications (Username, DeviceToken, DeviceType) VALUES (?, ?, ?)"
+	if update {
+		exec := "UPDATE Notifications SET Username = ?, NotificationType = ? WHERE DeviceToken = ?"
+		_, err = sqlConnection.Exec(exec, *username, dev_type, dev_token)
+
+		if err != nil {
+			writeJsonResponse(response, not.getResult(false), 500)
+			return
+		}
+
+		writeJsonResponse(response, not.getResult(true), 200)
+		return
+	}
+
+	exec := "INSERT INTO Notifications (Username, DeviceToken, NotificationType) VALUES (?, ?, ?)"
 	_, err = sqlConnection.Exec(exec, *username, dev_token, dev_type)
 
 	if err != nil {
