@@ -132,6 +132,28 @@ namespace Winofy.Connection
             }
         }
 
+        public async Task<NotificationResult> UpdateNotification(string deviceToken, NotificationType notification)
+        {
+            var url = InternalEndpoint + "notification";
+
+            int type = (int)notification;
+
+            var content = new Dictionary<string, string>()
+            {
+                { "device_token", deviceToken },
+                { "type", type.ToString() },
+            };
+
+            using (var body = new FormUrlEncodedContent(content))
+            using (var resp = await AuthorizedClient.PutAsync(url, body))
+            {
+                ThrowIfNotFound(url, resp);
+                ThrowIfUnauthorized(resp);
+                var res = await resp.Content.ReadAsStringAsync();
+                return JsonConvert.DeserializeObject<NotificationResult>(res);
+            }
+        }
+
         public void SetAuthorizationToken(string token)
         {
             AuthorizedClient.DefaultRequestHeaders.Remove("token");
