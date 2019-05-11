@@ -22,6 +22,8 @@ namespace Winofy.Account
 
     public partial class LoginData
     {
+        public static string LoginPath = Path.Combine(Xamarin.Essentials.FileSystem.AppDataDirectory, "login.json");
+
         public static LoginData Open(Stream stream)
         {
             using (var sr = new StreamReader(stream))

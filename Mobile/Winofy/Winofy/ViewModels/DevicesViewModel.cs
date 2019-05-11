@@ -4,21 +4,38 @@ using Winofy.Connection;
 using System.Threading.Tasks;
 using System.Collections.ObjectModel;
 using Winofy.Connection.Devices;
+using Xamarin.Forms;
 namespace Winofy.ViewModels
 {
     public class DevicesViewModel : ViewModelBase
     {
-        public ObservableCollection<Device> Devices { get; } = new ObservableCollection<Device>();
+        public DevicesViewModel()
+        {
+            RefreshDevices = new Command(() => _ = GetDevicesAsync());
+        }
+
+        public ObservableCollection<Connection.Devices.Device> Devices { get; } = new ObservableCollection<Connection.Devices.Device>();
 
         public WinofyClient Client { get; set; }
 
+        public Command RefreshDevices { get; }
+
+        public bool IsRefreshing
+        {
+            get => GetValue<bool>();
+            set => SetValue(value);
+        }
+
         public async Task GetDevicesAsync()
         {
+            IsRefreshing = true;
+
             try
             {
                 var dev = await Client.ListDevicesAsync();
                 Devices.Clear();
 
+                if (dev.Devices == null) dev.Devices = new Connection.Devices.Device[0];
                 foreach (var d in dev.Devices)
                 {
                     Devices.Add(d);
@@ -32,6 +49,8 @@ namespace Winofy.ViewModels
             {
                 Acr.UserDialogs.UserDialogs.Instance.Alert(ex.ToString());
             }
+
+            IsRefreshing = false;
         }
     }
 }
