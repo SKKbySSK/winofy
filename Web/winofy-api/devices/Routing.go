@@ -1,4 +1,4 @@
-package internal
+package devices
 
 import (
 	"encoding/json"
@@ -28,6 +28,24 @@ func getBodyParameters(request *restful.Request, names []string) ([]string, erro
 	}
 
 	return results, nil
+}
+
+func getUsernameFromToken(token string) (*string, error) {
+	q := "SELECT Username FROM Tokens WHERE Token = '" + token + "'"
+	rows, err := sqlConnection.Query(q)
+
+	if err != nil {
+		return nil, err
+	}
+
+	for rows.Next() {
+		var name string
+		rows.Scan(&name)
+
+		return &name, nil
+	}
+
+	return nil, nil
 }
 
 func writeJsonResponse(response *restful.Response, object interface{}, statusCode int) error {

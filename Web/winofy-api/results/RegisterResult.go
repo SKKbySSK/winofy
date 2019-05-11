@@ -5,8 +5,8 @@ const (
 	RegisterOk = "Ok"
 	RegisterInvalidRequest = "InvalidRequest"
 	RegisterUserExists = "UserExists"
-	RegisterIncorrectUsername = "IncorrectUsername"
-	RegisterIncorrectPassword = "IncorrectPassword"
+	RegisterIncorrectUsernameFormat = "IncorrectUsernameFormat"
+	RegisterIncorrectPasswordFormat = "IncorrectPasswordFormat"
 )
 
 type RegisterResult struct {

@@ -25,7 +25,7 @@ func (valid *ValidRouting) getResult(isValid bool) *results.TokenValidationResul
 
 func (valid *ValidRouting) registerFunc(request *restful.Request, response *restful.Response) {
 
-	values, err := getParameters(request, []string{ "token", "username" })
+	values, err := getBodyParameters(request, []string{"token", "username" })
 
 	//FIXME variable "name" can inject SQL
 

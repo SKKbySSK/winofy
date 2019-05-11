@@ -1,6 +1,7 @@
 package main
 
 import (
+	"./internal"
 	"encoding/json"
 	"flag"
 	"github.com/emicklei/go-restful"
@@ -9,7 +10,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
-	"./internal"
+	"./devices"
 )
 
 func main()  {
@@ -21,12 +22,15 @@ func main()  {
 
 	sqlConnection := connectToDatabase(connection)
 	internal.SetSqlConnection(sqlConnection)
+	devices.SetSqlConnection(sqlConnection)
 	defer sqlConnection.Close()
 
 	routings := []WinofyRouting{
 		new(internal.RegisterRouting),
 		new(internal.LoginRouting),
 		new(internal.ValidRouting),
+		new(devices.ListRouting),
+		new(devices.RegisterRouting),
 	}
 
 	ws := new(restful.WebService)

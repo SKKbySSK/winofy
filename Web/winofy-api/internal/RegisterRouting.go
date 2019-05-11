@@ -28,7 +28,7 @@ func (register *RegisterRouting) registerFunc(request *restful.Request, response
 	evaluateUsername := func (value string) bool { return len(value) < 3 || len(value) > 20 }
 	evaluatePassword := func (value string) bool { return len(value) < 5 || len(value) > 20 }
 
-	values, err := getParameters(request, []string{ "username", "password" })
+	values, err := getBodyParameters(request, []string{"username", "password" })
 
 	//FIXME variable "name" can inject SQL
 
@@ -42,10 +42,10 @@ func (register *RegisterRouting) registerFunc(request *restful.Request, response
 	pass := values[1]
 
 	if evaluateUsername(name) {
-		msgs := []string{ results.RegisterIncorrectUsername }
+		msgs := []string{ results.RegisterIncorrectUsernameFormat }
 
 		if evaluatePassword(pass) {
-			msgs = append(msgs, results.RegisterIncorrectPassword)
+			msgs = append(msgs, results.RegisterIncorrectPasswordFormat)
 		}
 
 		writeJsonResponse(response, register.getFailedResult(msgs), 400)
@@ -53,7 +53,7 @@ func (register *RegisterRouting) registerFunc(request *restful.Request, response
 	}
 
 	if evaluatePassword(pass) {
-		writeJsonResponse(response, register.getFailedResult([]string{ results.RegisterIncorrectPassword }), 400)
+		writeJsonResponse(response, register.getFailedResult([]string{ results.RegisterIncorrectPasswordFormat }), 400)
 		return
 	}
 

@@ -29,7 +29,7 @@ func (login *LoginRouting) getFailedResult() *results.LoginResult {
 
 func (login *LoginRouting) registerFunc(request *restful.Request, response *restful.Response) {
 
-	values, err := getParameters(request, []string{ "username", "password" })
+	values, err := getBodyParameters(request, []string{"username", "password" })
 
 	//FIXME variable "name" can inject SQL
 
