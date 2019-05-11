@@ -9,8 +9,8 @@ namespace Winofy.Connection
         Ok,
         InvalidRequest,
         UserExists,
-        IncorrectUsername,
-        IncorrectPassword,
+        IncorrectUsernameFormat,
+        IncorrectPasswordFormat,
     }
 
     public class RegisterResult

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Winofy.Pages.DevicesPage"
+             xmlns:xfx="clr-namespace:Xfx;assembly=Xfx.Controls"
+             xmlns:flex="clr-namespace:Flex.Controls;assembly=Flex"
+             xmlns:views="clr-namespace:Winofy.Views"
+             xmlns:vm="clr-namespace:Winofy.ViewModels"
+             xmlns:cv="clr-namespace:Winofy.ViewModels.Converters">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <vm:DevicesViewModel x:Key="viewModel"/>
+            <cv:InvertBoolConverter x:Key="invert"/>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    <ContentPage.Content>
+        <ListView ItemsSource="{Binding Devices}">
+            
+        </ListView>
+    </ContentPage.Content>
+</ContentPage>

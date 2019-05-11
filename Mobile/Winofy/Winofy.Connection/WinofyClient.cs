@@ -3,13 +3,33 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using Winofy.Connection.Devices;
+using System.Net;
 
 namespace Winofy.Connection
 {
+    public class UnauthorizedException : Exception
+    {
+    }
+
+    public class WinofyClientException : Exception
+    {
+        public WinofyClientException(HttpStatusCode statusCode, string url)
+        {
+            StatusCode = statusCode;
+            Url = url;
+        }
+
+        public HttpStatusCode StatusCode { get; }
+
+        public string Url { get; }
+    }
+
     public class WinofyClient : IDisposable
     {
         public const string Endpoint = "https://4eiot.ksprogram.work/";
         private const string InternalEndpoint = Endpoint + "internal/";
+        private const string DevicesEndpoint = Endpoint + "devices/";
 
         private HttpClient Client { get; } = new HttpClient();
 
@@ -28,6 +48,7 @@ namespace Winofy.Connection
             using (var body = new FormUrlEncodedContent(content))
             using (var resp = await Client.PutAsync(url, body))
             {
+                ThrowIfNotFound(url, resp);
                 var res = await resp.Content.ReadAsStringAsync();
                 return JsonConvert.DeserializeObject<RegisterResult>(res);
             }
@@ -46,6 +67,7 @@ namespace Winofy.Connection
             using (var body = new FormUrlEncodedContent(content))
             using (var resp = await Client.PostAsync(url, body))
             {
+                ThrowIfNotFound(url, resp);
                 var res = await resp.Content.ReadAsStringAsync();
                 return JsonConvert.DeserializeObject<LoginResult>(res);
             }
@@ -64,8 +86,48 @@ namespace Winofy.Connection
             using (var body = new FormUrlEncodedContent(content))
             using (var resp = await Client.PostAsync(url, body))
             {
+                ThrowIfNotFound(url, resp);
                 var res = await resp.Content.ReadAsStringAsync();
                 return JsonConvert.DeserializeObject<TokenValidationResult>(res);
+            }
+        }
+
+        public async Task<ListDevicesResult> ListDevicesAsync()
+        {
+            var url = DevicesEndpoint + "list";
+
+            using (var resp = await AuthorizedClient.GetAsync(url))
+            {
+                ThrowIfNotFound(url, resp);
+                ThrowIfUnauthorized(resp);
+                var res = await resp.Content.ReadAsStringAsync();
+                return JsonConvert.DeserializeObject<ListDevicesResult>(res);
+            }
+        }
+
+        public async Task<RegisterDeviceResult> RegisterDeviceAsync(Device device, bool generateDeviceId)
+        {
+            var url = DevicesEndpoint + "register";
+
+            if (generateDeviceId)
+            {
+                device.Id = Guid.NewGuid().ToString();
+            }
+
+            var content = new Dictionary<string, string>()
+            {
+                { "device_id", device.Id },
+                { "name", device.Name },
+                { "description", device.Description },
+            };
+
+            using (var body = new FormUrlEncodedContent(content))
+            using (var resp = await AuthorizedClient.PutAsync(url, body))
+            {
+                ThrowIfNotFound(url, resp);
+                ThrowIfUnauthorized(resp);
+                var res = await resp.Content.ReadAsStringAsync();
+                return JsonConvert.DeserializeObject<RegisterDeviceResult>(res);
             }
         }
 
@@ -80,6 +142,22 @@ namespace Winofy.Connection
             Client.Dispose();
             AuthorizedClient.Dispose();
             GC.SuppressFinalize(this);
+        }
+
+        private void ThrowIfNotFound(string url, HttpResponseMessage response)
+        {
+            if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+            {
+                throw new WinofyClientException(response.StatusCode, url);
+            }
+        }
+
+        private void ThrowIfUnauthorized(HttpResponseMessage response)
+        {
+            if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+            {
+                throw new UnauthorizedException();
+            }
         }
     }
 }

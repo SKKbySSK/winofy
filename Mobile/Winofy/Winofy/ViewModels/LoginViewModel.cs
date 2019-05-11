@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Xamarin.Forms;
 using Winofy.Account;
 using Winofy.Connection;
+using System.Diagnostics;
 namespace Winofy.ViewModels
 {
     public class LoginViewModel : Abstracts.ViewModelBase
@@ -13,8 +14,8 @@ namespace Winofy.ViewModels
         public LoginViewModel()
         {
             IsAuthorizing = false;
-            LoginCommand = new Command(() => AuthorizeAsync(Username, Password));
-            RegisterCommand = new Command(() => RegisterAsync(Username, Password));
+            LoginCommand = new Command(() => _ = AuthorizeAsync(Username, Password));
+            RegisterCommand = new Command(() => _ = RegisterAsync(Username, Password));
             if (File.Exists(loginPath))
             {
                 using (var fs = new FileStream(loginPath, FileMode.Open, FileAccess.Read))
@@ -26,7 +27,7 @@ namespace Winofy.ViewModels
                     }
                     Username = login.Username;
                     Token = login.AuthorizingToken;
-                    AuthorizeAsync(login.Username, null, login.AuthorizingToken);
+                    _ = AuthorizeAsync(login.Username, null, login.AuthorizingToken);
                 }
 
                 return;
@@ -35,7 +36,7 @@ namespace Winofy.ViewModels
 
         public event EventHandler Authorized;
 
-        private WinofyClient Communicator { get; } = new WinofyClient();
+        public WinofyClient Client { get; } = new WinofyClient();
 
         public bool IsAuthorizing
         {
@@ -97,21 +98,33 @@ namespace Winofy.ViewModels
                 return;
             }
 
-            if (string.IsNullOrEmpty(token) || !(await Communicator.ValidateTokenAsync(username, token)).Valid)
+            try
             {
-                if (string.IsNullOrWhiteSpace(password) && string.IsNullOrEmpty(token))
+                if (string.IsNullOrEmpty(token) || !(await Client.ValidateTokenAsync(username, token)).Valid)
                 {
-                    PasswordErrorMessage = "You must provide password";
-                    IsAuthorizing = false;
-                    return;
-                }
+                    if (string.IsNullOrWhiteSpace(password) && string.IsNullOrEmpty(token))
+                    {
+                        PasswordErrorMessage = "You must provide password";
+                        IsAuthorizing = false;
+                        return;
+                    }
 
-                var result = await Communicator.LoginAsync(username, password);
+                    var result = await Client.LoginAsync(username, password);
 
-                if (result.Success)
-                {
-                    token = result.Token;
+                    if (result.Success)
+                    {
+                        token = result.Token;
+                    }
                 }
+            }
+            catch (WinofyClientException clex)
+            {
+                Acr.UserDialogs.UserDialogs.Instance.Alert(clex.Url, "Client Error : " + clex.StatusCode);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                Acr.UserDialogs.UserDialogs.Instance.Alert(ex.ToString());
             }
 
             if (!string.IsNullOrEmpty(token))
@@ -121,12 +134,12 @@ namespace Winofy.ViewModels
                     LoginData.Export(new LoginData(username, token), fs);
                 }
 
-                Communicator.SetAuthorizationToken(token);
+                Client.SetAuthorizationToken(token);
                 Authorized?.Invoke(this, EventArgs.Empty);
             }
             else
             {
-                ErrorMessage = "Could not login to " + username;
+                ErrorMessage = "Failed to login";
             }
 
             IsAuthorizing = false;
@@ -139,33 +152,45 @@ namespace Winofy.ViewModels
             PasswordErrorMessage = null;
             IsAuthorizing = true;
 
-            var res = await Communicator.RegisterAsync(username, password);
-
-            foreach (var msg in res.Messages)
+            try
             {
-                switch (msg)
+                var res = await Client.RegisterAsync(username, password);
+
+                foreach (var msg in res.Messages)
                 {
-                    case RegisterMessage.IncorrectUsername:
-                        UsernameErrorMessage = "Incorrect username";
-                        break;
-                    case RegisterMessage.IncorrectPassword:
-                        PasswordErrorMessage = "Incorrect password";
-                        break;
-                    case RegisterMessage.InvalidRequest:
-                        ErrorMessage = "Application error";
-                        break;
-                    case RegisterMessage.Unknown:
-                        ErrorMessage = "Unknown error";
-                        break;
-                    case RegisterMessage.UserExists:
-                        UsernameErrorMessage = "User already exists";
-                        break;
+                    switch (msg)
+                    {
+                        case RegisterMessage.IncorrectUsernameFormat:
+                            UsernameErrorMessage = "Incorrect username format";
+                            break;
+                        case RegisterMessage.IncorrectPasswordFormat:
+                            PasswordErrorMessage = "Incorrect password format";
+                            break;
+                        case RegisterMessage.InvalidRequest:
+                            ErrorMessage = "Application error";
+                            break;
+                        case RegisterMessage.Unknown:
+                            ErrorMessage = "Unknown error";
+                            break;
+                        case RegisterMessage.UserExists:
+                            UsernameErrorMessage = "User already exists";
+                            break;
+                    }
+                }
+
+                if (res.Success)
+                {
+                    await AuthorizeAsync(username, password);
                 }
             }
-
-            if (res.Success)
+            catch (WinofyClientException clex)
             {
-                await AuthorizeAsync(username, password);
+                Acr.UserDialogs.UserDialogs.Instance.Alert(clex.Url, "Client Error : " + clex.StatusCode);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                Acr.UserDialogs.UserDialogs.Instance.Alert(ex.ToString());
             }
 
             IsAuthorizing = false;

@@ -18,13 +18,15 @@ namespace Winofy.Pages
 
         public LoginPage()
         {
+            NavigationPage.SetHasNavigationBar(this, false);
             InitializeComponent();
             ViewModel.Authorized += ViewModel_Authorized;
         }
 
         async void ViewModel_Authorized(object sender, EventArgs e)
         {
-            await Acr.UserDialogs.UserDialogs.Instance.AlertAsync("Authorized");
+            var devices = new DevicesPage(ViewModel.Client);
+            await Navigation.PushAsync(devices);
         }
     }
 }
