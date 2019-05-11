@@ -31,8 +31,8 @@ func getBodyParameters(request *restful.Request, names []string) ([]string, erro
 }
 
 func getUsernameFromToken(token string) (*string, error) {
-	q := "SELECT Username FROM Tokens WHERE Token = '" + token + "'"
-	rows, err := sqlConnection.Query(q)
+	q := "SELECT Username FROM Tokens WHERE Token = ?"
+	rows, err := sqlConnection.Query(q, token)
 
 	if err != nil {
 		return nil, err
@@ -58,11 +58,10 @@ func writeJsonResponse(response *restful.Response, object interface{}, statusCod
 
 func isAuthorized(request *restful.Request) bool {
 
-	//FIXME variable "token" can inject SQL
 	token := request.HeaderParameter("token")
 
-	q := "SELECT Creation FROM Tokens WHERE Token = '" + token + "'"
-	rows, err := sqlConnection.Query(q)
+	q := "SELECT Creation FROM Tokens WHERE Token = ?"
+	rows, err := sqlConnection.Query(q, token)
 
 	if err != nil {
 		log.Println("Error occured while checking auhorizing status")

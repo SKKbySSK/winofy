@@ -25,8 +25,8 @@ func (list *ListRouting) registerFunc(request *restful.Request, response *restfu
 		return
 	}
 
-	q := "SELECT DeviceId, Name, Description FROM Devices WHERE Username = '" + *username + "'"
-	rows, err := sqlConnection.Query(q)
+	q := "SELECT DeviceId, Name, Description FROM Devices WHERE Username = ?"
+	rows, err := sqlConnection.Query(q, *username)
 
 	if err != nil {
 		writeJsonResponse(response, new(results.ListDevicesResult), 500)

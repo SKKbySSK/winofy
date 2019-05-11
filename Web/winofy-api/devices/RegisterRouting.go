@@ -49,8 +49,8 @@ func (reg *RegisterRouting) registerFunc(request *restful.Request, response *res
 		return
 	}
 
-	q := "SELECT DeviceId FROM Devices WHERE Username = '" + *username + "'"
-	rows, err := sqlConnection.Query(q)
+	q := "SELECT DeviceId FROM Devices WHERE Username = ?"
+	rows, err := sqlConnection.Query(q, *username)
 	defer rows.Close()
 
 	if err != nil {
@@ -71,11 +71,8 @@ func (reg *RegisterRouting) registerFunc(request *restful.Request, response *res
 		}
 	}
 
-	exec := "INSERT INTO Devices (DeviceId, Username, Name, Description, Creation)"
-	exec += "VALUES('" + dev.Id + "', '" + *username + "', '" + dev.Name + "', '" + dev.Description + "', NOW())"
-
-
-	_, err = sqlConnection.Exec(exec)
+	exec := "INSERT INTO Devices (DeviceId, Username, Name, Description, Creation) VALUES(?, ?, ?, ?, NOW())"
+	_, err = sqlConnection.Exec(exec, dev.Id, *username, dev.Name, dev.Description)
 
 	if err != nil {
 		writeJsonResponse(response, getRegisterResult(false, results.DeviceRegisterUnknown), 500)

@@ -27,8 +27,6 @@ func (valid *ValidRouting) registerFunc(request *restful.Request, response *rest
 
 	values, err := getBodyParameters(request, []string{"token", "username" })
 
-	//FIXME variable "name" can inject SQL
-
 	if err != nil {
 		writeJsonResponse(response, valid.getResult(false), 200)
 		log.Println(err)
@@ -38,8 +36,8 @@ func (valid *ValidRouting) registerFunc(request *restful.Request, response *rest
 	token := values[0]
 	username := values[1]
 
-	q := "SELECT Creation FROM Tokens WHERE Username = '" + username + "' AND Token = '" + token + "'"
-	rows, err := sqlConnection.Query(q)
+	q := "SELECT Creation FROM Tokens WHERE Username = ? AND Token = ?"
+	rows, err := sqlConnection.Query(q, username, token)
 	defer rows.Close()
 
 	if rows.Next() {

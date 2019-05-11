@@ -31,8 +31,6 @@ func (login *LoginRouting) registerFunc(request *restful.Request, response *rest
 
 	values, err := getBodyParameters(request, []string{"username", "password" })
 
-	//FIXME variable "name" can inject SQL
-
 	if err != nil {
 		writeJsonResponse(response, login.getFailedResult(), 400)
 		log.Println(err)
@@ -42,8 +40,8 @@ func (login *LoginRouting) registerFunc(request *restful.Request, response *rest
 	name := values[0]
 	pass := values[1]
 
-	q := "SELECT Username, Password FROM Users WHERE Username = '" + name + "'"
-	rows, err := sqlConnection.Query(q)
+	q := "SELECT Username, Password FROM Users WHERE Username = ?"
+	rows, err := sqlConnection.Query(q, name)
 
 	if err != nil {
 		writeJsonResponse(response, login.getFailedResult(), 400)
@@ -51,7 +49,6 @@ func (login *LoginRouting) registerFunc(request *restful.Request, response *rest
 		return
 	}
 
-	rname, hashed := "", ""
 	defer rows.Close()
 
 	if !rows.Next() {
@@ -59,6 +56,7 @@ func (login *LoginRouting) registerFunc(request *restful.Request, response *rest
 		return
 	}
 
+	rname, hashed := "", ""
 	err = rows.Scan(&rname, &hashed)
 
 	if err != nil {
@@ -87,8 +85,8 @@ func (login *LoginRouting) registerFunc(request *restful.Request, response *rest
 }
 
 func (login *LoginRouting) setOrGetToken(username string) (string, error) {
-	q := "SELECT Username, Creation, Token FROM Tokens WHERE Username = '" + username + "'"
-	rows, err := sqlConnection.Query(q)
+	q := "SELECT Username, Creation, Token FROM Tokens WHERE Username = ?"
+	rows, err := sqlConnection.Query(q, username)
 	defer rows.Close()
 
 	if err != nil {
@@ -104,8 +102,8 @@ func (login *LoginRouting) setOrGetToken(username string) (string, error) {
 	}
 
 	token = login.generateToken()
-	exec := "INSERT INTO Tokens (Username, Creation, Token) VALUES ('" + username + "', NOW(), '" + token + "')"
-	_, err = sqlConnection.Exec(exec)
+	exec := "INSERT INTO Tokens (Username, Creation, Token) VALUES (?, NOW(), ?)"
+	_, err = sqlConnection.Exec(exec, username, token)
 	log.Println("Inserted new token for " + username)
 
 	return token, err

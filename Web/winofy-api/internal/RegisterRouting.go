@@ -30,8 +30,6 @@ func (register *RegisterRouting) registerFunc(request *restful.Request, response
 
 	values, err := getBodyParameters(request, []string{"username", "password" })
 
-	//FIXME variable "name" can inject SQL
-
 	if err != nil {
 		writeJsonResponse(response, register.getFailedResult([]string{ results.RegisterInvalidRequest }), 400)
 		log.Println(err)
@@ -57,7 +55,7 @@ func (register *RegisterRouting) registerFunc(request *restful.Request, response
 		return
 	}
 
-	rows, err := sqlConnection.Query("SELECT Username FROM Users WHERE Username = \"" + name + "\"")
+	rows, err := sqlConnection.Query("SELECT Username FROM Users WHERE Username = ?", name)
 	defer rows.Close()
 
 	if err != nil {
@@ -72,9 +70,9 @@ func (register *RegisterRouting) registerFunc(request *restful.Request, response
 	}
 
 	hashed := register.hashAndSalt([]byte(pass))
-	exec := "INSERT INTO Users (Username, Password, Creation) " +
-		"VALUES ('" + name + "', '" + hashed + "', NOW())"
-	_, err = sqlConnection.Exec(exec)
+	exec := "INSERT INTO Users (Username, Password, Creation) VALUES (?, ?, NOW())"
+
+	_, err = sqlConnection.Exec(exec, name, hashed)
 
 	if err != nil {
 		writeJsonResponse(response, register.getFailedResult([]string{ results.RegisterUnknown }), 400)

@@ -29,6 +29,7 @@ func main()  {
 		new(internal.RegisterRouting),
 		new(internal.LoginRouting),
 		new(internal.ValidRouting),
+		new(internal.NotificationRouting),
 		new(devices.ListRouting),
 		new(devices.RegisterRouting),
 	}
