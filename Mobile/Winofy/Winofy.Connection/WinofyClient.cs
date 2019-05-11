@@ -132,7 +132,7 @@ namespace Winofy.Connection
             }
         }
 
-        public async Task<NotificationResult> UpdateNotification(string deviceToken, NotificationType notification)
+        public async Task<NotificationResult> UpdateNotificationAsync(string deviceToken, NotificationType notification)
         {
             var url = InternalEndpoint + "notification";
 
