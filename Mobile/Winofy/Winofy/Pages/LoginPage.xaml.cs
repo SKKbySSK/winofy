@@ -31,12 +31,12 @@ namespace Winofy.Pages
 
                 if (!notification.Success)
                 {
-                    Acr.UserDialogs.UserDialogs.Instance.Alert("Failed to register notification for this device");
+                    await Acr.UserDialogs.UserDialogs.Instance.AlertAsync("Failed to register notification for this device");
                 }
             }
             catch (Exception ex)
             {
-                Acr.UserDialogs.UserDialogs.Instance.Alert(ex.ToString(), "Unknown error occured");
+                await Acr.UserDialogs.UserDialogs.Instance.AlertAsync(ex.ToString(), "Unknown error occured");
             }
 
             var devices = new DevicesPage(ViewModel.Client, ViewModel.Username);
