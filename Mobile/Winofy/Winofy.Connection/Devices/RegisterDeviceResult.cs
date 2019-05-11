@@ -5,6 +5,7 @@ namespace Winofy.Connection.Devices
     public enum RegisterDeviceMessage
     {
         Ok,
+        Unauthorized,
         DeviceExists,
         Unknown
     }

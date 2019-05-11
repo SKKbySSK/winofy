@@ -9,24 +9,25 @@ namespace Winofy.ViewModels
 {
     public class LoginViewModel : Abstracts.ViewModelBase
     {
-        private string loginPath = Path.Combine(Xamarin.Essentials.FileSystem.AppDataDirectory, "login.json");
 
         public LoginViewModel()
         {
             IsAuthorizing = false;
             LoginCommand = new Command(() => _ = AuthorizeAsync(Username, Password));
             RegisterCommand = new Command(() => _ = RegisterAsync(Username, Password));
-            if (File.Exists(loginPath))
+            if (File.Exists(LoginData.LoginPath))
             {
-                using (var fs = new FileStream(loginPath, FileMode.Open, FileAccess.Read))
+                using (var fs = new FileStream(LoginData.LoginPath, FileMode.Open, FileAccess.Read))
                 {
                     var login = LoginData.Open(fs);
-                    if (login == null)
+
+                    Username = login.Username;
+                    Token = login.AuthorizingToken;
+                    if (login == null || string.IsNullOrWhiteSpace(login.Username) || string.IsNullOrWhiteSpace(login.AuthorizingToken))
                     {
                         return;
                     }
-                    Username = login.Username;
-                    Token = login.AuthorizingToken;
+
                     _ = AuthorizeAsync(login.Username, null, login.AuthorizingToken);
                 }
 
@@ -129,7 +130,7 @@ namespace Winofy.ViewModels
 
             if (!string.IsNullOrEmpty(token))
             {
-                using (var fs = new FileStream(loginPath, FileMode.Create, FileAccess.Write))
+                using (var fs = new FileStream(LoginData.LoginPath, FileMode.Create, FileAccess.Write))
                 {
                     LoginData.Export(new LoginData(username, token), fs);
                 }

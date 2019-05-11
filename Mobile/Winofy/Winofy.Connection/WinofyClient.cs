@@ -28,6 +28,7 @@ namespace Winofy.Connection
     public class WinofyClient : IDisposable
     {
         public const string Endpoint = "https://4eiot.ksprogram.work/";
+        //public const string Endpoint = "http://127.0.0.1:8080/";
         private const string InternalEndpoint = Endpoint + "internal/";
         private const string DevicesEndpoint = Endpoint + "devices/";
 

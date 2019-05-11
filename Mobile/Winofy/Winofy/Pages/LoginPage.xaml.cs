@@ -25,7 +25,7 @@ namespace Winofy.Pages
 
         async void ViewModel_Authorized(object sender, EventArgs e)
         {
-            var devices = new DevicesPage(ViewModel.Client);
+            var devices = new DevicesPage(ViewModel.Client, ViewModel.Username);
             await Navigation.PushAsync(devices);
         }
     }
