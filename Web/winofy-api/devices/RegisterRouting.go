@@ -9,7 +9,7 @@ type RegisterRouting struct {
 }
 
 func (reg *RegisterRouting) Route(ws *restful.WebService) {
-	ws.Route(ws.POST("devices/register").To(reg.registerFunc))
+	ws.Route(ws.PUT("devices/register").To(reg.registerFunc))
 }
 
 func getRegisterResult(success bool, message string) *results.DeviceRegisterResult {
