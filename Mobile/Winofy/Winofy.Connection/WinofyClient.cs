@@ -157,7 +157,9 @@ namespace Winofy.Connection
         public void SetAuthorizationToken(string token)
         {
             AuthorizedClient.DefaultRequestHeaders.Remove("token");
-            AuthorizedClient.DefaultRequestHeaders.Add("token", token);
+
+            if (token != null)
+                AuthorizedClient.DefaultRequestHeaders.Add("token", token);
         }
 
         public void Dispose()

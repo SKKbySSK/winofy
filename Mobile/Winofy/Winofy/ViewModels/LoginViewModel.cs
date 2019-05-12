@@ -15,9 +15,9 @@ namespace Winofy.ViewModels
             IsAuthorizing = false;
             LoginCommand = new Command(() => _ = AuthorizeAsync(Username, Password));
             RegisterCommand = new Command(() => _ = RegisterAsync(Username, Password));
-            if (File.Exists(LoginData.LoginPath))
+            if (File.Exists(LoginData.DefaultLoginPath))
             {
-                using (var fs = new FileStream(LoginData.LoginPath, FileMode.Open, FileAccess.Read))
+                using (var fs = new FileStream(LoginData.DefaultLoginPath, FileMode.Open, FileAccess.Read))
                 {
                     var login = LoginData.Open(fs);
 
@@ -37,7 +37,7 @@ namespace Winofy.ViewModels
 
         public event EventHandler Authorized;
 
-        public WinofyClient Client { get; } = new WinofyClient();
+        public AccountCenter Account { get; } = new AccountCenter();
 
         public bool IsAuthorizing
         {
@@ -101,7 +101,7 @@ namespace Winofy.ViewModels
 
             try
             {
-                if (string.IsNullOrEmpty(token) || !(await Client.ValidateTokenAsync(username, token)).Valid)
+                if (string.IsNullOrEmpty(token) || !await Account.LoginWithTokenAsync(username, token))
                 {
                     if (string.IsNullOrWhiteSpace(password) && string.IsNullOrEmpty(token))
                     {
@@ -110,12 +110,7 @@ namespace Winofy.ViewModels
                         return;
                     }
 
-                    var result = await Client.LoginAsync(username, password);
-
-                    if (result.Success)
-                    {
-                        token = result.Token;
-                    }
+                    token = await Account.LoginAsync(username, password);
                 }
             }
             catch (WinofyClientException clex)
@@ -130,12 +125,11 @@ namespace Winofy.ViewModels
 
             if (!string.IsNullOrEmpty(token))
             {
-                using (var fs = new FileStream(LoginData.LoginPath, FileMode.Create, FileAccess.Write))
+                using (var fs = new FileStream(LoginData.DefaultLoginPath, FileMode.Create, FileAccess.Write))
                 {
                     LoginData.Export(new LoginData(username, token), fs);
                 }
 
-                Client.SetAuthorizationToken(token);
                 Authorized?.Invoke(this, EventArgs.Empty);
             }
             else
@@ -155,7 +149,7 @@ namespace Winofy.ViewModels
 
             try
             {
-                var res = await Client.RegisterAsync(username, password);
+                var res = await Account.Client.RegisterAsync(username, password);
 
                 foreach (var msg in res.Messages)
                 {

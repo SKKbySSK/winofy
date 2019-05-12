@@ -25,21 +25,7 @@ namespace Winofy.Pages
 
         async void ViewModel_Authorized(object sender, EventArgs e)
         {
-            try
-            {
-                var notification = await Notification.SetNotificationAsync(ViewModel.Client, Connection.NotificationType.FCM);
-
-                if (!notification.Success)
-                {
-                    await Acr.UserDialogs.UserDialogs.Instance.AlertAsync("Failed to register notification for this device");
-                }
-            }
-            catch (Exception ex)
-            {
-                await Acr.UserDialogs.UserDialogs.Instance.AlertAsync(ex.ToString(), "Unknown error occured");
-            }
-
-            var devices = new DevicesPage(ViewModel.Client, ViewModel.Username);
+            var devices = new DevicesPage(ViewModel.Account);
             await Navigation.PushAsync(devices);
         }
     }

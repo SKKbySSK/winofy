@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using System.Collections.ObjectModel;
 using Winofy.Connection.Devices;
 using Xamarin.Forms;
+using Winofy.Account;
+
 namespace Winofy.ViewModels
 {
     public class DevicesViewModel : ViewModelBase
@@ -16,9 +18,15 @@ namespace Winofy.ViewModels
 
         public ObservableCollection<Connection.Devices.Device> Devices { get; } = new ObservableCollection<Connection.Devices.Device>();
 
-        public WinofyClient Client { get; set; }
+        public AccountCenter Account { get; set; }
 
         public Command RefreshDevices { get; }
+
+        public string Username
+        {
+            get => GetValue<string>();
+            set => SetValue(value);
+        }
 
         public bool IsRefreshing
         {
@@ -32,7 +40,7 @@ namespace Winofy.ViewModels
 
             try
             {
-                var dev = await Client.ListDevicesAsync();
+                var dev = await Account.Client.ListDevicesAsync();
                 Devices.Clear();
 
                 if (dev.Devices == null) dev.Devices = new Connection.Devices.Device[0];
@@ -43,11 +51,11 @@ namespace Winofy.ViewModels
             }
             catch (WinofyClientException clex)
             {
-                Acr.UserDialogs.UserDialogs.Instance.Alert(clex.Url, "Client Error : " + clex.StatusCode);
+                await Acr.UserDialogs.UserDialogs.Instance.AlertAsync(clex.Url, "Client Error : " + clex.StatusCode);
             }
             catch (Exception ex)
             {
-                Acr.UserDialogs.UserDialogs.Instance.Alert(ex.ToString());
+                await Acr.UserDialogs.UserDialogs.Instance.AlertAsync(ex.ToString());
             }
 
             IsRefreshing = false;
