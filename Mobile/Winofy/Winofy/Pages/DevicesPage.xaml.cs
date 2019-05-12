@@ -7,6 +7,7 @@ using Winofy.Connection;
 using System.IO;
 using Winofy.Account;
 using System.Threading.Tasks;
+using Winofy.Connection.Devices;
 
 namespace Winofy.Pages
 {
@@ -28,6 +29,18 @@ namespace Winofy.Pages
                 Text = "Logout",
                 Command = new Command(() => _ = LogoutAsync())
             });
+
+            lv.ItemTapped += Lv_ItemTapped;
+        }
+
+        async void Lv_ItemTapped(object sender, ItemTappedEventArgs e)
+        {
+            lv.ItemTapped -= Lv_ItemTapped;
+            if (e.Item is Winofy.Connection.Devices.Device dev)
+            {
+                await Navigation.PushAsync(new DeviceDetailPage(dev));
+            }
+            lv.ItemTapped += Lv_ItemTapped;
         }
 
         private async Task LogoutAsync()

@@ -9,6 +9,10 @@ namespace Winofy.Account
     {
         public WinofyClient Client { get; } = new WinofyClient();
 
+        public event EventHandler LoggedOut;
+
+        public event EventHandler LoggedIn;
+
         public string Username { get; private set; }
 
         public string Token { get; private set; }
@@ -35,6 +39,8 @@ namespace Winofy.Account
 
                 Client.SetAuthorizationToken(Token);
                 await SetNotificationAsync(notificationType);
+
+                LoggedIn?.Invoke(this, EventArgs.Empty);
             }
 
             return Token;
@@ -60,6 +66,8 @@ namespace Winofy.Account
 
                 Client.SetAuthorizationToken(Token);
                 await SetNotificationAsync(notificationType);
+
+                LoggedIn?.Invoke(this, EventArgs.Empty);
             }
 
             return result.Valid;
@@ -90,6 +98,8 @@ namespace Winofy.Account
             {
                 await Acr.UserDialogs.UserDialogs.Instance.AlertAsync(ex.ToString(), "Unknown error occured");
             }
+
+            LoggedOut?.Invoke(this, EventArgs.Empty);
         }
 
         private async Task SetNotificationAsync(NotificationType type)

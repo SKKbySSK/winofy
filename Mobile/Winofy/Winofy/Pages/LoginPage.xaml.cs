@@ -8,6 +8,7 @@ using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 using Winofy.Extensions;
 using Winofy.ViewModels;
+using Winofy.Account;
 
 namespace Winofy.Pages
 {
@@ -15,6 +16,8 @@ namespace Winofy.Pages
     public partial class LoginPage : ContentPage
     {
         private LoginViewModel ViewModel => (LoginViewModel)Resources["viewModel"];
+
+        public AccountCenter Account => ViewModel.Account;
 
         public LoginPage()
         {

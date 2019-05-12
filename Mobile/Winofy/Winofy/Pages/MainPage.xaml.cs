@@ -12,9 +12,16 @@ namespace Winofy.Pages
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class MainPage : MasterDetailPage
     {
+        private LoginPage LoginPage { get; } = new LoginPage();
+        private AccountPage AccountPage { get; }
+
         public MainPage()
         {
+            AccountPage = new AccountPage(LoginPage.Account);
             InitializeComponent();
+
+            Detail = new NavigationPage(LoginPage);
+            Master = AccountPage;
         }
     }
 }

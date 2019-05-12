@@ -6,7 +6,7 @@
              xmlns:flex="clr-namespace:Flex.Controls;assembly=Flex"
              xmlns:views="clr-namespace:Winofy.Views"
              xmlns:vm="clr-namespace:Winofy.ViewModels"
-             xmlns:cv="clr-namespace:Winofy.ViewModels.Converters" Title="Registered Devices">
+             xmlns:cv="clr-namespace:Winofy.ViewModels.Converters" Title="Devices">
     <ContentPage.Resources>
         <ResourceDictionary>
             <vm:DevicesViewModel x:Key="viewModel"/>
@@ -14,7 +14,8 @@
         </ResourceDictionary>
     </ContentPage.Resources>
     <ContentPage.Content>
-        <ListView ItemsSource="{Binding Devices}" BindingContext="{StaticResource viewModel}" HasUnevenRows="true" IsPullToRefreshEnabled="true" RefreshCommand="{Binding RefreshDevices}" IsRefreshing="{Binding IsRefreshing}">
+        <ListView x:Name="lv" ItemsSource="{Binding Devices}" BindingContext="{StaticResource viewModel}" HasUnevenRows="true" SelectionMode="None"
+                  IsPullToRefreshEnabled="true" RefreshCommand="{Binding RefreshDevices}" IsRefreshing="{Binding IsRefreshing}">
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <ViewCell>
