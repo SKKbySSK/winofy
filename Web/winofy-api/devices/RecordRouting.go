@@ -102,7 +102,7 @@ func (rec *RecordRouting) registerFunc(request *restful.Request, response *restf
 
 	for _, token := range tokens {
 		err = fcm.SendNotification("SI Received", "[SI]" + strconv.FormatFloat(si, 'f', 3, 32) +
-			", [Temp]" + strconv.FormatFloat(humid, 'f', 3, 32), token)
+			", [Temp]" + strconv.FormatFloat(temp, 'f', 3, 32), token)
 
 		if err != nil {
 			log.Println(err)
