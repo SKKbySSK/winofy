@@ -22,13 +22,13 @@ func getRegisterResult(success bool, message string) *results.DeviceRegisterResu
 
 func (reg *RegisterRouting) registerFunc(request *restful.Request, response *restful.Response) {
 	if !isAuthorized(request) {
-		writeJsonResponse(response, getRegisterResult(false, results.DeviceRegisterUnauthorized), 401)
+		_ = writeJsonResponse(response, getRegisterResult(false, results.DeviceRegisterUnauthorized), 401)
 		return
 	}
 
 	username, err := getUsernameFromToken(request.HeaderParameter("token"))
 	if err != nil {
-		writeJsonResponse(response, getRegisterResult(false, results.DeviceRegisterUnknown), 400)
+		_ = writeJsonResponse(response, getRegisterResult(false, results.DeviceRegisterUnknown), 400)
 		return
 	}
 

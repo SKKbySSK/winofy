@@ -13,9 +13,15 @@ type FcmNotification struct {
 	msg *messaging.Client
 }
 
-func CreateFcmNotification(credentialsFile string) (*FcmNotification, error) {
+var fcmCredentialsFilePath string
+
+func SetFcmCredentialsFile(path string) {
+	fcmCredentialsFilePath = path
+}
+
+func CreateFcmNotification() (*FcmNotification, error) {
 	ctx := context.Background()
-	opt := option.WithCredentialsFile(credentialsFile)
+	opt := option.WithCredentialsFile(fcmCredentialsFilePath)
 
 	app, err := firebase.NewApp(ctx, nil, opt)
 
@@ -38,7 +44,7 @@ func CreateFcmNotification(credentialsFile string) (*FcmNotification, error) {
 	return res, nil
 }
 
-func (fcm *FcmNotification) sendNotification(title string, body string, fcmToken string) error  {
+func (fcm *FcmNotification) SendNotification(title string, body string, fcmToken string) error  {
 
 	msg := &messaging.Message{
 
