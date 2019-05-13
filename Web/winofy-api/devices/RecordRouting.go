@@ -29,7 +29,7 @@ func (rec *RecordRouting) registerFunc(request *restful.Request, response *restf
 		return
 	}
 
-	values, err := getBodyParameters(request, []string{ "device_id", "axes", "SI" })
+	values, err := getBodyParameters(request, []string{ "device_id", "axes", "SI", "temp", "humidity" })
 
 	if err != nil {
 		response.WriteHeader(400)
@@ -51,8 +51,22 @@ func (rec *RecordRouting) registerFunc(request *restful.Request, response *restf
 		return
 	}
 
-	exec := "INSERT INTO Records (DeviceId, Date, Axes, SI) VALUES (?, NOW(), ?, ?)"
-	_, err = sqlConnection.Exec(exec, deviceId, axes, si)
+	temp, err := strconv.ParseFloat(values[3], 32)
+
+	if err != nil {
+		response.WriteHeader(400)
+		return
+	}
+
+	humid, err := strconv.ParseFloat(values[4], 32)
+
+	if err != nil {
+		response.WriteHeader(400)
+		return
+	}
+
+	exec := "INSERT INTO Records (DeviceId, Date, Axes, SI, Temp, Humidity) VALUES (?, NOW(), ?, ?, ?, ?)"
+	_, err = sqlConnection.Exec(exec, deviceId, axes, si, temp, humid)
 
 	if err != nil {
 		response.WriteHeader(400)
@@ -87,7 +101,8 @@ func (rec *RecordRouting) registerFunc(request *restful.Request, response *restf
 	}
 
 	for _, token := range tokens {
-		err = fcm.SendNotification("SI Received", "SI : " + strconv.FormatFloat(si, 'f', 3, 32), token)
+		err = fcm.SendNotification("SI Received", "[SI]" + strconv.FormatFloat(si, 'f', 3, 32) +
+			", [Temp]" + strconv.FormatFloat(humid, 'f', 3, 32), token)
 
 		if err != nil {
 			log.Println(err)
