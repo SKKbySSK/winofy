@@ -23,7 +23,6 @@ func (notif *NotificationRouting) getResult(success bool) *results.NotificationR
 	return res
 }
 
-
 func (not *NotificationRouting) postFunc(request *restful.Request, response *restful.Response) {
 	//TODO Handle the earthquake data, temperature, humidity
 
@@ -72,7 +71,7 @@ func (not *NotificationRouting) postFunc(request *restful.Request, response *res
 		tokens = append(tokens, dev_token)
 	}
 
-	fcm, err := CreateFcmNotification("fcm/winofy.json")
+	fcm, err := CreateFcmNotification()
 
 	if err != nil {
 		response.WriteHeader(500)
@@ -81,7 +80,7 @@ func (not *NotificationRouting) postFunc(request *restful.Request, response *res
 	}
 
 	for _, token := range tokens {
-		err = fcm.sendNotification("This is an notification", "Are you there?", token)
+		err = fcm.SendNotification("This is an notification", "Are you there?", token)
 
 		if err != nil {
 			log.Println(err)
@@ -124,9 +123,9 @@ func (not *NotificationRouting) putFunc(request *restful.Request, response *rest
 	var (
 		r_token string
 		r_type string
-		update bool
 	)
 
+	update := false
 	for rows.Next() {
 		rows.Scan(&r_token, &r_type)
 
@@ -143,6 +142,7 @@ func (not *NotificationRouting) putFunc(request *restful.Request, response *rest
 
 	if update {
 		exec := "UPDATE Notifications SET Username = ?, NotificationType = ? WHERE DeviceToken = ?"
+		println(exec)
 		_, err = sqlConnection.Exec(exec, *username, dev_type, dev_token)
 
 		if err != nil {
@@ -155,6 +155,7 @@ func (not *NotificationRouting) putFunc(request *restful.Request, response *rest
 	}
 
 	exec := "INSERT INTO Notifications (Username, DeviceToken, NotificationType) VALUES (?, ?, ?)"
+	println(exec)
 	_, err = sqlConnection.Exec(exec, *username, dev_token, dev_type)
 
 	if err != nil {

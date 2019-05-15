@@ -25,6 +25,8 @@ func main()  {
 	devices.SetSqlConnection(sqlConnection)
 	defer sqlConnection.Close()
 
+	internal.SetFcmCredentialsFile("fcm/winofy.json")
+
 	routings := []WinofyRouting{
 		new(internal.RegisterRouting),
 		new(internal.LoginRouting),
@@ -32,6 +34,7 @@ func main()  {
 		new(internal.NotificationRouting),
 		new(devices.ListRouting),
 		new(devices.RegisterRouting),
+		new(devices.RecordRouting),
 	}
 
 	ws := new(restful.WebService)
