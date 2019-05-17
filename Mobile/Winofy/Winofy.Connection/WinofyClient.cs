@@ -154,6 +154,27 @@ namespace Winofy.Connection
             }
         }
 
+        public async Task<bool> RecordAsync(string deviceId, float si, Axes axes, float temperature, float humidity)
+        {
+            var url = DevicesEndpoint + "record";
+            var content = new Dictionary<string, string>()
+            {
+                { "device_id", deviceId },
+                { "SI", si.ToString() },
+                { "axes", ((int)axes).ToString() },
+                { "temp", temperature.ToString() },
+                { "humidity", humidity.ToString() },
+            };
+
+            using (var body = new FormUrlEncodedContent(content))
+            using (var resp = await AuthorizedClient.PostAsync(url, body))
+            {
+                ThrowIfNotFound(url, resp);
+                ThrowIfUnauthorized(resp);
+                return resp.IsSuccessStatusCode;
+            }
+        }
+
         public void SetAuthorizationToken(string token)
         {
             AuthorizedClient.DefaultRequestHeaders.Remove("token");
