@@ -88,3 +88,10 @@ winofy record -SI SI値 -axes SI値の軸情報 -temp 温度 (摂氏) -humidity 
 
  4. おそらく、bin/release/netcoreapp2.1/\<Platform\>/publish/にwinofy (Windowsではwinofy.exe)というファイルが完成しています
  5. 後はこのファイルをターミナル等から実行してください（前のセクションを参照)
+
+## その他
+コマンドの内容については
+``` shell
+winofy -h
+```
+で確認できます
