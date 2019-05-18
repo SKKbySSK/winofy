@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Winofy.Device": {
+      "commandName": "Project",
+      "commandLineArgs": "-h"
+    }
+  }
+}

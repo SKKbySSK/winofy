@@ -5,6 +5,7 @@ using System.Net.WebSockets;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Winofy.Connection;
+using Winofy.Connection.Devices;
 
 namespace Winofy.Device
 {
@@ -14,6 +15,95 @@ namespace Winofy.Device
         
         static async Task Main(string[] args)
         {
+            if (args.Contains("-h") || args.Contains("--help"))
+            {
+                Console.WriteLine("Winofy client device application");
+                Console.WriteLine("You can use these arguments");
+                Console.WriteLine("----------common----------");
+                Console.WriteLine("-u: Username [Not Recommended. Use -token instead]");
+                Console.WriteLine("-p: Password [Not Recommended. Use -token instead]");
+                Console.WriteLine("-token: Authorization token");
+                Console.WriteLine("-h, --help: Show help");
+                Console.WriteLine("----------command----------");
+                Console.WriteLine("init: Initialize device file and save to the device.json");
+                Console.WriteLine("register: Register device to the server");
+                Console.WriteLine("create: Create new account");
+                Console.WriteLine("record: Send record to the server (this needs -SI, -axes, -temp, -humidity parameters)");
+                Console.WriteLine("list: List the registered devices");
+                Console.WriteLine("----------record command----------");
+                Console.WriteLine("-SI: SI value");
+                Console.WriteLine("-axes: Axes (0=YZ, 1=XZ, 2=XY)");
+                Console.WriteLine("-temp: Temperature (Celsius)");
+                Console.WriteLine("-humidity: Humidity (0~1)");
+                return;
+            }
+
+            var token = await GetTokenAsync(args);
+            if (string.IsNullOrEmpty(token))
+            {
+                return;
+            }
+
+            Client.SetAuthorizationToken(token);
+
+            if (args.Contains("list"))
+            {
+                var dev = await Client.ListDevicesAsync();
+
+                foreach (var d in dev.Devices)
+                {
+                    Console.WriteLine($"----------");
+                    Console.WriteLine($"ID:{d.Id}");
+                    Console.WriteLine($"Name:{d.Name}");
+                    Console.WriteLine($"Description:{d.Description}");
+                }
+
+                return;
+            }
+
+            var device = GetOrInitDevice(args);
+            if (device == null) return;
+            
+            if (args.Contains("register"))
+            {
+                await RegisterDeviceAsync(device);
+                return;
+            }
+            
+            if (args.Contains("record"))
+            {
+                await SendRecordAsync(args, device);
+                return;
+            }
+        }
+
+        private static async Task RegisterDeviceAsync(Connection.Devices.Device device)
+        {
+            var devReg = await Client.RegisterDeviceAsync(device, false);
+
+            if (devReg.Success)
+            {
+                Console.WriteLine("Device was successfully registered");
+            }
+            else
+            {
+                switch (devReg.Message)
+                {
+                    case RegisterDeviceMessage.Unknown:
+                        Console.WriteLine("Unknown error");
+                        break;
+                    case RegisterDeviceMessage.Unauthorized:
+                        Console.WriteLine("Failed to authorize");
+                        break;
+                    case RegisterDeviceMessage.DeviceExists:
+                        Console.WriteLine("This device was already registered");
+                        break;
+                }
+            }
+        }
+
+        private static Connection.Devices.Device GetOrInitDevice(string[] args)
+        {
             Connection.Devices.Device device;
             
             if (args.Contains("init"))
@@ -22,7 +112,7 @@ namespace Winofy.Device
                 device.Id = Guid.NewGuid().ToString();
 
                 device.Name = WaitForInput("Name : ");
-                
+
                 Console.Write("Description (optional) : ");
                 device.Description = Console.ReadLine();
 
@@ -33,38 +123,78 @@ namespace Winofy.Device
                 {
                     sw.Write(js);
                 }
-                
-                Console.WriteLine("Json exported to device.json");
+
+                Console.WriteLine("Json successfully exported to device.json");
             }
             else
             {
-                using (var fs = new FileStream("device.json", FileMode.Open, FileAccess.Read))
+                if (!GetArgument(args, "-dev", out var path))
+                {
+                    path = "device.json";
+                }
+
+                if (!File.Exists(path))
+                {
+                    Console.WriteLine("Device configuration file does not exist.");
+                    Console.WriteLine("Please provide device.json at the current directory or use \"-dev <PATH>\" parameter.");
+                    Console.WriteLine("If you don't have any file, add \"init\" argument to initialize new one");
+                    return null;
+                }
+
+                using (var fs = new FileStream(path, FileMode.Open, FileAccess.Read))
                 using (var sr = new StreamReader(fs))
                 {
                     var js = sr.ReadToEnd();
                     device = JsonConvert.DeserializeObject<Connection.Devices.Device>(js);
                 }
             }
-            
-            var token = await GetTokenAsync(args);
-            Client.SetAuthorizationToken(token);
-            await SendRecordAsync(args, device);
+
+            return device;
         }
 
-        static async Task<string> GetTokenAsync(string[] args)
+        static async Task<string> GetTokenAsync(string[] args, bool createAccount = true)
         {
             GetArgument(args, "-token", out var token);
 
+            string username = null, password = null;
+            if (args.Contains("create") && createAccount)
+            {
+                Console.WriteLine("New Account");
+                username = WaitForInput("Username : ");
+                password = WaitForInput("Password : ", true);
+                Console.WriteLine("Registering...");
+                var res = await Client.RegisterAsync(username, password);
+
+                if (res.Success)
+                {
+                    Console.WriteLine("You've created new account \"" + username + "\"");
+                }
+                else
+                {
+                    Console.WriteLine($"Failed to create account");
+
+                    int i = 1;
+                    foreach (var msg in res.Messages)
+                    {
+                        Console.WriteLine($"Reason {i++} : {msg}");
+                    }
+
+                    return null;
+                }
+            }
+
             if (string.IsNullOrWhiteSpace(token))
             {
-                GetArgument(args, "-u", out var username);
+                if (username == null)
+                    GetArgument(args, "-u", out username);
 
                 if (string.IsNullOrWhiteSpace(username))
                 {
                     username = WaitForInput("Username : ");
                 }
 
-                GetArgument(args, "-p", out var password);
+                if (password == null)
+                    GetArgument(args, "-p", out password);
 
                 if (string.IsNullOrWhiteSpace(password))
                 {
@@ -76,11 +206,12 @@ namespace Winofy.Device
                 if (loginRes.Success)
                 {
                     token = loginRes.Token;
-                    Console.WriteLine("Authorized : " + loginRes.Token);
+                    Console.WriteLine("Authorization Token : " + loginRes.Token);
                 }
                 else
                 {
-                    return await GetTokenAsync(args);
+                    Console.WriteLine("Failed to login. Make sure you've entered username or password correctly");
+                    return await GetTokenAsync(args, false);
                 }
             }
 
