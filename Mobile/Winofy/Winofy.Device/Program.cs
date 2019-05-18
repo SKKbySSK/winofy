@@ -28,6 +28,7 @@ namespace Winofy.Device
                 Console.WriteLine("init: Initialize device file and save to the device.json");
                 Console.WriteLine("register: Register device to the server");
                 Console.WriteLine("create: Create new account");
+                Console.WriteLine("token: Get Authorization Token");
                 Console.WriteLine("record: Send record to the server (this needs -SI, -axes, -temp, -humidity parameters)");
                 Console.WriteLine("list: List the registered devices");
                 Console.WriteLine("----------record command----------");
@@ -39,6 +40,14 @@ namespace Winofy.Device
             }
 
             var token = await GetTokenAsync(args);
+
+            if (args.Contains("token"))
+            {
+                token = string.IsNullOrEmpty(token) ? "Failed to authorize" : token;
+                Console.WriteLine(token);
+                return;
+            }
+
             if (string.IsNullOrEmpty(token))
             {
                 return;
@@ -206,7 +215,6 @@ namespace Winofy.Device
                 if (loginRes.Success)
                 {
                     token = loginRes.Token;
-                    Console.WriteLine("Authorization Token : " + loginRes.Token);
                 }
                 else
                 {
@@ -228,7 +236,30 @@ namespace Winofy.Device
             if (float.TryParse(siStr, out var si) && int.TryParse(axesStr, out var axes) &&
                 float.TryParse(tempStr, out var temp) && float.TryParse(humidStr, out var humid))
             {
-                await Client.RecordAsync(device.Id, si, (Axes) axes, temp, humid);
+                if (humid > 1 || humid < 0)
+                {
+                    Console.WriteLine("humidity must be less than 1 and greater than 0");
+                    return;
+                }
+
+                if (axes > 2 || axes < 0)
+                {
+                    Console.WriteLine("axes must be less than 2 and greater than 0");
+                    return;
+                }
+
+                if (await Client.RecordAsync(device.Id, si, (Axes)axes, temp, humid))
+                {
+                    Console.WriteLine("OK");
+                }
+                else
+                {
+                    Console.WriteLine("Failed to send record. Please check the authorization data");
+                }
+            }
+            else
+            {
+                Console.WriteLine("You must provide SI, axes, temp, humidity parameters");
             }
         }
 
