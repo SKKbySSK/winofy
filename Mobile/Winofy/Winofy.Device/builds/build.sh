@@ -1,12 +1,13 @@
 #!/bin/bash
 IN="../Winofy.Device.csproj"
-OUT="."
+OUT="builds/"
 
 dotnet publish $IN --self-contained -r linux-arm -c release -o $OUT/linux-arm/
 dotnet publish $IN --self-contained -r win-x64 -c release -o $OUT/win-x64/
 dotnet publish $IN --self-contained -r osx-x64 -c release -o $OUT/osx-x64/
 dotnet publish $IN --self-contained -r linux-x64 -c release -o $OUT/linux-x64/
 
+OUT="."
 rm $OUT/linux-arm.zip
 zip $OUT/linux-arm.zip -r $OUT/linux-arm/
 

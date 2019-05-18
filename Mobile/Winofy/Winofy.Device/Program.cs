@@ -238,13 +238,13 @@ namespace Winofy.Device
             {
                 if (humid > 1 || humid < 0)
                 {
-                    Console.WriteLine("humidity must be less than 1 and greater than 0");
+                    Console.WriteLine("humidity must be 1 or less than 1 and 0 or greater than 0");
                     return;
                 }
 
                 if (axes > 2 || axes < 0)
                 {
-                    Console.WriteLine("axes must be less than 2 and greater than 0");
+                    Console.WriteLine("axes must be 2 or less than 2 and 0 or greater than 0");
                     return;
                 }
 
