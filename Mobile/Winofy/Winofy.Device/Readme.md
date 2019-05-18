@@ -1,6 +1,11 @@
 # Winofy Client Device Application
 Winofyのアカウント作成、デバイス登録、震度・温度送信を行うことのできるWindows, Linux, macOS対応のアプリケーションです。
 
+## ダウンロード
+Wikiよりダウンロードしてください
+
+https://github.com/SKKbySSK/winofy/wiki
+
 ## 使い方
 1. ビルドするか、実行可能ファイル(winofyまたはwinofy.exe)をダウンロードして適当なフォルダに保存してください
 2. ターミナルやコマンドプロンプト等で保存したフォルダに移動してください
