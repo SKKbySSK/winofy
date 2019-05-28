@@ -81,7 +81,6 @@ func isAuthorized(request *restful.Request) bool {
 			return false
 		}
 
-		//Token expires in 72 hours
 		return true
 	}
 
