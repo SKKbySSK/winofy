@@ -12,5 +12,8 @@ namespace Winofy.Connection.Devices
 
         [JsonProperty("description")]
         public string Description { get; set; }
+
+        [JsonProperty("notification")]
+        public bool? Notification { get; set; }
     }
 }
