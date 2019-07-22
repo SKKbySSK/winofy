@@ -29,7 +29,7 @@ func (rec *RecordRouting) registerFunc(request *restful.Request, response *restf
 		return
 	}
 
-	values, err := getBodyParameters(request, []string{ "device_id", "axes", "SI", "temp", "humidity" })
+	values, err := getBodyParameters(request, []string{ "device_id", "axes", "SI", "temp", "humidity", "window" })
 
 	if err != nil {
 		response.WriteHeader(400)
@@ -65,8 +65,15 @@ func (rec *RecordRouting) registerFunc(request *restful.Request, response *restf
 		return
 	}
 
-	exec := "INSERT INTO Records (DeviceId, Date, Axes, SI, Temp, Humidity) VALUES (?, NOW(), ?, ?, ?, ?)"
-	_, err = sqlConnection.Exec(exec, deviceId, axes, si, temp, humid)
+	window, err := strconv.ParseInt(values[5], 10, 32)
+
+	if err != nil {
+		response.WriteHeader(400)
+		return
+	}
+
+	exec := "INSERT INTO Records (DeviceId, Date, Axes, SI, Temp, Humidity, Window) VALUES (?, NOW(), ?, ?, ?, ?, ?)"
+	_, err = sqlConnection.Exec(exec, deviceId, axes, si, temp, humid, window)
 
 	if err != nil {
 		response.WriteHeader(400)

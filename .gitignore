@@ -479,3 +479,5 @@ Mobile/Winofy/Winofy.Device/osx-x64/winofy.runtimeconfig.json
 Mobile/Winofy/Winofy.Device/win-x64/winofy.deps.json
 Mobile/Winofy/Winofy.Device/win-x64/winofy.runtimeconfig.json
 Mobile/Winofy/Winofy.Device/test.json
+Web/winofy-api/.idea/workspace.xml
+Web/winofy-api/builds/winofy-api
