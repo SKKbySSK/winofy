@@ -93,9 +93,6 @@ func (rec *RecordRouting) registerFunc(request *restful.Request, response *restf
 	case sql.ErrNoRows:
 		log.Println("Could not find the device " + deviceName)
 		deviceName = "Unknown"
-	default:
-		log.Println(err)
-		return
 	}
 
 	q = "SELECT DeviceToken FROM Notifications WHERE Username = ? AND NotificationType = ?"
