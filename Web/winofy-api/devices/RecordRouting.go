@@ -131,16 +131,16 @@ func (rec *RecordRouting) registerFunc(request *restful.Request, response *restf
 
 	switch window {
 	case WindowOpen:
-		title = fmt.Sprint("%sが窓を開きました", deviceName)
+		title = fmt.Sprintf("%sが窓を開きました", deviceName)
 	case WindowClose:
-		title = fmt.Sprint("%sが窓を閉じました", deviceName)
+		title = fmt.Sprintf("%sが窓を閉じました", deviceName)
 	default:
 		return
 	}
 
 	for _, token := range tokens {
 
-		err = fcm.SendNotification(title, fmt.Sprint("温度:%.1f, 湿度:%.1f, SI値:%.2f", temp, humid, si), token)
+		err = fcm.SendNotification(title, fmt.Sprintf("温度:%.1f, 湿度:%.1f, SI値:%.2f", temp, humid, si), token)
 
 		if err != nil {
 			log.Println(err)
