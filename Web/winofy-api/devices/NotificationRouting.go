@@ -16,7 +16,7 @@ func (notif *NotificationRouting) registerFunc(request *restful.Request, respons
 		return
 	}
 
-	username, err := getUsernameFromToken(request.HeaderParameter("token"))
+	_, err := getUsernameFromToken(request.HeaderParameter("token"))
 	if err != nil {
 		response.WriteHeader(400)
 		return
