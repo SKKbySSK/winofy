@@ -82,15 +82,19 @@ func (rec *RecordRouting) registerFunc(request *restful.Request, response *restf
 		return
 	}
 
+	if window == WindowNone {
+		return
+	}
+
 	q := "SELECT Name FROM Devices WHERE DeviceId = ?"
 	row := sqlConnection.QueryRow(q, deviceId)
 	var deviceName string
 
 	switch err := row.Scan(&deviceName); err {
 	case sql.ErrNoRows:
-		log.Print("Could not find the device " + deviceName)
+		log.Println("Could not find the device " + deviceName)
 	default:
-		log.Fatal(err)
+		log.Println(err)
 		return
 	}
 
@@ -100,7 +104,7 @@ func (rec *RecordRouting) registerFunc(request *restful.Request, response *restf
 
 	if err != nil {
 		response.WriteHeader(500)
-		log.Fatal(err)
+		log.Println(err)
 		return
 	}
 
@@ -122,12 +126,21 @@ func (rec *RecordRouting) registerFunc(request *restful.Request, response *restf
 		return
 	}
 
+
+	var title string
+
+	switch window {
+	case WindowOpen:
+		title = fmt.Sprint("%sが窓を開きました", deviceName)
+	case WindowClose:
+		title = fmt.Sprint("%sが窓を閉じました", deviceName)
+	default:
+		return
+	}
+
 	for _, token := range tokens {
-		
-		
-		
-		err = fcm.SendNotification("SI Received", "[SI]" + strconv.FormatFloat(si, 'f', 3, 32) +
-			", [Temp]" + strconv.FormatFloat(temp, 'f', 3, 32), token)
+
+		err = fcm.SendNotification(title, fmt.Sprint("温度:%.1f, 湿度:%.1f, SI値:%.2f", temp, humid, si), token)
 
 		if err != nil {
 			log.Println(err)
@@ -135,8 +148,4 @@ func (rec *RecordRouting) registerFunc(request *restful.Request, response *restf
 	}
 
 	response.WriteHeader(200)
-}
-
-func generateWindowOpenTitle(deviceName string) string {
-	return fmt.Sprint("%sが窓を開きました", deviceName)
 }
