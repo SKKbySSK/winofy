@@ -27,14 +27,28 @@ namespace Winofy.Connection
 
     public class WinofyClient : IDisposable
     {
-        public const string Endpoint = "https://4eiot.ksprogram.work/";
+        public string ApiEndPoint { get; private set; } = "https://4eiot.ksprogram.work/";
         //public const string Endpoint = "http://127.0.0.1:8080/";
-        private const string InternalEndpoint = Endpoint + "internal/";
-        private const string DevicesEndpoint = Endpoint + "devices/";
+
+        public string InternalEndpoint => ApiEndPoint + "internal/";
+
+        public string DevicesEndpoint => ApiEndPoint + "devices/";
 
         private HttpClient Client { get; } = new HttpClient();
 
         private HttpClient AuthorizedClient { get; } = new HttpClient();
+
+        public WinofyClient() { }
+
+        public WinofyClient(string apiEndPoint)
+        {
+            if (!apiEndPoint.EndsWith("/", StringComparison.Ordinal))
+            {
+                apiEndPoint += "/";
+            }
+
+            ApiEndPoint = apiEndPoint;
+        }
 
         public async Task<RegisterResult> RegisterAsync(string username, string password)
         {
@@ -95,7 +109,7 @@ namespace Winofy.Connection
 
         public async Task<ListDevicesResult> ListDevicesAsync()
         {
-            var url = DevicesEndpoint + "list";
+            var url = DevicesEndpoint + $"list";
 
             using (var resp = await AuthorizedClient.GetAsync(url))
             {
@@ -192,7 +206,7 @@ namespace Winofy.Connection
 
         private void ThrowIfNotFound(string url, HttpResponseMessage response)
         {
-            if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+            if (response.StatusCode == HttpStatusCode.NotFound)
             {
                 throw new WinofyClientException(response.StatusCode, url);
             }
@@ -200,7 +214,7 @@ namespace Winofy.Connection
 
         private void ThrowIfUnauthorized(HttpResponseMessage response)
         {
-            if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+            if (response.StatusCode == HttpStatusCode.Unauthorized)
             {
                 throw new UnauthorizedException();
             }

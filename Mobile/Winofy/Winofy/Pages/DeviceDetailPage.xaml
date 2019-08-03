@@ -1,25 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ContentPage xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Class="Winofy.Pages.DeviceDetailPage"
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Winofy.Pages.DeviceDetailPage"
              xmlns:xfx="clr-namespace:Xfx;assembly=Xfx.Controls"
              xmlns:flex="clr-namespace:Flex.Controls;assembly=Flex"
              xmlns:views="clr-namespace:Winofy.Views"
              xmlns:vm="clr-namespace:Winofy.ViewModels"
-             xmlns:cv="clr-namespace:Winofy.ViewModels.Converters" Title="{Binding Device.Name}" BindingContext="{StaticResource viewModel}">
+             xmlns:cv="clr-namespace:Winofy.ViewModels.Converters"
+             Title="{Binding Device.Name}"
+             BindingContext="{StaticResource viewModel}">
     <ContentPage.Resources>
         <ResourceDictionary>
-            <vm:DeviceDetailViewModel x:Key="viewModel"/>
+            <vm:DeviceDetailViewModel x:Key="viewModel" />
         </ResourceDictionary>
     </ContentPage.Resources>
     <ContentPage.Content>
         <StackLayout Padding="15">
-            <Label FontSize="Large" Text="{Binding Device.Name}"/>
-            <Label FontSize="Medium" TextColor="Gray" Text="{Binding Device.Description}"/>
-            
-            <StackLayout Orientation="Horizontal">
-                <Label Text="Notification" VerticalTextAlignment="Center"/>
-                <Switch IsToggled="true"/>
-            </StackLayout>
-            
+            <Label FontSize="Large"
+                   Text="{Binding Device.Name}" />
+            <Label FontSize="Medium"
+                   TextColor="Gray"
+                   Text="{Binding Device.Description}" />
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>
