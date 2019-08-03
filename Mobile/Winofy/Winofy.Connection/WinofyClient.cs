@@ -168,7 +168,7 @@ namespace Winofy.Connection
             }
         }
 
-        public async Task<bool> RecordAsync(string deviceId, float si, Axes axes, float temperature, float humidity)
+        public async Task<bool> RecordAsync(string deviceId, float si, Axes axes, float temperature, float humidity, WindowState window)
         {
             var url = DevicesEndpoint + "record";
             var content = new Dictionary<string, string>()
@@ -178,6 +178,7 @@ namespace Winofy.Connection
                 { "axes", ((int)axes).ToString() },
                 { "temp", temperature.ToString() },
                 { "humidity", humidity.ToString() },
+                { "window", ((int)window).ToString() }
             };
 
             using (var body = new FormUrlEncodedContent(content))

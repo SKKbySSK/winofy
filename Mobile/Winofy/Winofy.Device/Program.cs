@@ -12,7 +12,7 @@ namespace Winofy.Device
     class Program
     {
         private static WinofyClient Client = new WinofyClient();
-        
+
         static async Task Main(string[] args)
         {
             if (args.Contains("-h") || args.Contains("--help"))
@@ -29,13 +29,14 @@ namespace Winofy.Device
                 Console.WriteLine("register: Register device to the server");
                 Console.WriteLine("create: Create new account");
                 Console.WriteLine("token: Get Authorization Token");
-                Console.WriteLine("record: Send record to the server (this needs -SI, -axes, -temp, -humidity parameters)");
+                Console.WriteLine("record: Send record to the server (this needs -SI, -axes, -temp, -humidity -window parameters)");
                 Console.WriteLine("list: List the registered devices");
                 Console.WriteLine("----------record command----------");
                 Console.WriteLine("-SI: SI value");
                 Console.WriteLine("-axes: Axes (0=YZ, 1=XZ, 2=XY)");
                 Console.WriteLine("-temp: Temperature (Celsius)");
                 Console.WriteLine("-humidity: Humidity (0~1)");
+                Console.WriteLine("-window: Window state(0=Opened, 1=Closed, 2=None)");
                 return;
             }
 
@@ -72,13 +73,13 @@ namespace Winofy.Device
 
             var device = GetOrInitDevice(args);
             if (device == null) return;
-            
+
             if (args.Contains("register"))
             {
                 await RegisterDeviceAsync(device);
                 return;
             }
-            
+
             if (args.Contains("record"))
             {
                 await SendRecordAsync(args, device);
@@ -114,7 +115,7 @@ namespace Winofy.Device
         private static Connection.Devices.Device GetOrInitDevice(string[] args)
         {
             Connection.Devices.Device device;
-            
+
             if (args.Contains("init"))
             {
                 device = new Connection.Devices.Device();
@@ -232,9 +233,11 @@ namespace Winofy.Device
             GetArgument(args, "-axes", out var axesStr);
             GetArgument(args, "-temp", out var tempStr);
             GetArgument(args, "-humidity", out var humidStr);
+            GetArgument(args, "-window", out var windowStr);
 
             if (float.TryParse(siStr, out var si) && int.TryParse(axesStr, out var axes) &&
-                float.TryParse(tempStr, out var temp) && float.TryParse(humidStr, out var humid))
+                float.TryParse(tempStr, out var temp) && float.TryParse(humidStr, out var humid) &&
+                int.TryParse(windowStr, out var windowInt))
             {
                 if (humid > 1 || humid < 0)
                 {
@@ -244,11 +247,17 @@ namespace Winofy.Device
 
                 if (axes > 2 || axes < 0)
                 {
-                    Console.WriteLine("axes must be 2 or less than 2 and 0 or greater than 0");
+                    Console.WriteLine("axes must be 0 to 2");
                     return;
                 }
 
-                if (await Client.RecordAsync(device.Id, si, (Axes)axes, temp, humid))
+                if (windowInt > 2 || windowInt < 0)
+                {
+                    Console.WriteLine("window state must be 0 to 2");
+                    return;
+                }
+
+                if (await Client.RecordAsync(device.Id, si, (Axes)axes, temp, humid, (WindowState)windowInt))
                 {
                     Console.WriteLine("OK");
                 }
@@ -302,7 +311,7 @@ namespace Winofy.Device
                 {
                     input = Console.ReadLine();
                 }
-                
+
             } while (!condition?.Invoke(input) ?? string.IsNullOrWhiteSpace(input));
 
             return input;
