@@ -1,13 +1,12 @@
 package devices
 
 import (
+	"../internal"
+	"../results"
 	"database/sql"
-	"fmt"
 	"github.com/emicklei/go-restful"
 	"log"
 	"strconv"
-	"../internal"
-	"../results"
 )
 
 type RecordRouting struct {
@@ -93,6 +92,7 @@ func (rec *RecordRouting) registerFunc(request *restful.Request, response *restf
 	switch err := row.Scan(&deviceName); err {
 	case sql.ErrNoRows:
 		log.Println("Could not find the device " + deviceName)
+		deviceName = "Unknown"
 	default:
 		log.Println(err)
 		return
@@ -131,16 +131,23 @@ func (rec *RecordRouting) registerFunc(request *restful.Request, response *restf
 
 	switch window {
 	case WindowOpen:
-		title = fmt.Sprintf("%sが窓を開きました", deviceName)
+		title = deviceName + "が窓を開きました"
 	case WindowClose:
-		title = fmt.Sprintf("%sが窓を閉じました", deviceName)
+		title = deviceName + "が窓を閉じました"
 	default:
 		return
 	}
 
-	for _, token := range tokens {
+	var (
+		tempStr = strconv.FormatFloat(temp, 'f', 1, 64)
+		humidStr = strconv.FormatFloat(humid, 'f', 1, 64)
+		siStr = strconv.FormatFloat(si, 'f', 3, 64)
+	)
 
-		err = fcm.SendNotification(title, fmt.Sprintf("温度:%.1f, 湿度:%.1f, SI値:%.2f", temp, humid, si), token)
+	body := "温度:" + tempStr + "℃, 湿度:" + humidStr +  "%, SI値:" + siStr
+
+	for _, token := range tokens {
+		err = fcm.SendNotification(title, body, token)
 
 		if err != nil {
 			log.Println(err)
