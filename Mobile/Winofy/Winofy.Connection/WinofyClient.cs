@@ -107,9 +107,9 @@ namespace Winofy.Connection
             }
         }
 
-        public async Task<ListDevicesResult> ListDevicesAsync(bool getNotifications)
+        public async Task<ListDevicesResult> ListDevicesAsync()
         {
-            var url = DevicesEndpoint + $"list?notifications={getNotifications}";
+            var url = DevicesEndpoint + $"list";
 
             using (var resp = await AuthorizedClient.GetAsync(url))
             {
