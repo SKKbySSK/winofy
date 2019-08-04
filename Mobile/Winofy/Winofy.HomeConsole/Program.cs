@@ -10,6 +10,8 @@ using Newtonsoft.Json;
 using System.Threading.Tasks;
 using System.Runtime.CompilerServices;
 using Winofy.Connection.Devices;
+using Unosquare.WiringPi.Native;
+using Microsoft.Win32.SafeHandles;
 
 namespace Winofy.HomeConsole
 {
@@ -18,6 +20,8 @@ namespace Winofy.HomeConsole
         public const string ConfigPath = "config.json";
 
         public Device Device { get; set; }
+
+        public int D7sAddress { get; set; } = D7sAddresses.Address;
 
         public BcmPin DhtSensorPin { get; set; } = BcmPin.Gpio00;
 
@@ -28,6 +32,10 @@ namespace Winofy.HomeConsole
         public string Username { get; set; }
 
         public Threshold Threshold { get; set; } = new Threshold();
+
+        public PWM PWM1 { get; set; } = PWM.GPIO13;
+
+        public PWM PWM2 { get; set; } = PWM.GPIO18;
     }
 
     public class Threshold
@@ -39,15 +47,20 @@ namespace Winofy.HomeConsole
 
     public class PWM
     {
+        public static PWM GPIO13 => new PWM() { Pin = BcmPin.Gpio13 };
+
+        public static PWM GPIO18 => new PWM() { Pin = BcmPin.Gpio18 };
+
         //13 or 18
-        public BcmPin Pin { get; set; } = BcmPin.Gpio18;
+        //See https://github.com/unosquare/raspberryio#using-the-gpio-pins
+        public BcmPin Pin { get; set; } = BcmPin.Gpio23;
 
-        public int Range { get; set; } = 1024;
+        public double DutyCycle { get; set; } = 0.5;
 
-        public int Register { get; set; } = 512;
+        public int DelayMs { get; set; } = 3000;
 
-        [JsonIgnore()]
-        public float DutyCycle => Register / (float)Range;
+        //See https://raspberrypi.stackexchange.com/questions/4906/control-hardware-pwm-frequency/9725#9725
+        public int Frequency { get; set; } = 2000;
     }
 
     class Program
@@ -60,6 +73,8 @@ namespace Winofy.HomeConsole
             HomeConfig config = GetConfig();
             var client = await PrepareClientAsync(config);
 
+            await client.RecordAsync(config.Device.Id, 10, Axes.XY, 30, 0.9f, WindowState.Closed);
+
             Pi.Init<BootstrapWiringPi>();
 
             using (var dht = DhtSensor.Create(config.DhtType, Pi.Gpio[config.DhtSensorPin]))
@@ -68,7 +83,7 @@ namespace Winofy.HomeConsole
                 dht.OnDataAvailable += Dht_OnDataAvailable;
 
                 Console.WriteLine("Preparing vibration sensor...");
-                var d7s = new D7s();
+                var d7s = new D7s(config.D7sAddress);
                 d7s.Reset();
 
                 while (d7s.GetState() != D7sState.Normal)
@@ -91,34 +106,64 @@ namespace Winofy.HomeConsole
                     Thread.Yield();
                     var ax = d7s.GetAxis();
                     var si = d7s.ReadSI();
-                    var h = humidity.Value;
-                    var temp = temperature.Value;
+                    var h = (float)humidity.Value;
+                    var temp = (float)temperature.Value;
 
                     if (!string.IsNullOrEmpty(devId))
                     {
-                        await client.RecordAsync(devId, si, (Axes)ax, temp, h, )
+                        var window = HandleTempAndSI(config, temp, si);
+                        await client.RecordAsync(devId, si, (Axes)ax, temp, h, window);
                     }
                 }
             }
         }
 
-        private static void HandleTempAndSI(Threshold threshold, float temperature, float si)
+        private static WindowState HandleTempAndSI(HomeConfig config, float temperature, float si)
         {
-            if (si >= threshold.SI)
+            if (si >= config.Threshold.SI)
             {
-
-                return;
+                Open(config);
+                return WindowState.Opened;
             }
 
-            if (temperature >= threshold.Temperature)
+            if (temperature >= config.Threshold.Temperature)
             {
+                Close(config);
+                return WindowState.Closed;
+            }
 
+            return WindowState.None;
+        }
+
+        private static void SetPWM(PWM pwm, bool on)
+        {
+            var pin = (Unosquare.WiringPi.GpioPin)Pi.Gpio[pwm.Pin];
+            if (on)
+            {
+                pin.PinMode = GpioPinDriveMode.PwmOutput;
+                pin.PwmRange = 1024;
+                pin.PwmRegister = (int)(pin.PwmRange * pwm.DutyCycle);
+                pin.PwmClockDivisor = (int)(19.2e6 / pwm.Frequency / pin.PwmRange);
+            }
+            else
+            {
+                pin.PinMode = GpioPinDriveMode.Output;
+                pin.Write(GpioPinValue.Low);
             }
         }
 
-        private static void SetPWM(PWM on, PWM off)
+        private static void Open(HomeConfig config)
         {
-            var pin = Pi.Gpio[]
+            SetPWM(config.PWM1, true);
+            SetPWM(config.PWM2, false);
+            Thread.Sleep(config.PWM1.DelayMs);
+        }
+
+        private static void Close(HomeConfig config)
+        {
+            SetPWM(config.PWM2, true);
+            SetPWM(config.PWM1, false);
+            Thread.Sleep(config.PWM2.DelayMs);
         }
 
         private static void Dht_OnDataAvailable(object sender, DhtReadEventArgs e)

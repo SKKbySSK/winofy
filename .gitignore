@@ -443,6 +443,7 @@ Web/winofy-api/builds/winofy-api
 Web/winofy-api/.idea/workspace.xml
 Web/db/connection.json
 
+Mobile/Winofy/Winofy.HomeConsole/builds/linux-arm/
 Mobile/Winofy/Winofy.Device/builds/linux-arm/
 Mobile/Winofy/Winofy.Device/builds/linux-x64/
 Mobile/Winofy/Winofy.Device/builds/osx-x64/
