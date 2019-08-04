@@ -3,8 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="fe4edebb-8827-4030-98ff-3c52acc50233" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/../../Mobile/Winofy/Winofy.HomeConsole/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../../Mobile/Winofy/Winofy.HomeConsole/Program.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Mobile/Winofy/Winofy.HomeConsole/builds/linux-arm.zip" beforeDir="false" afterPath="$PROJECT_DIR$/../../Mobile/Winofy/Winofy.HomeConsole/builds/linux-arm.zip" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/devices/RecordRouting.go" beforeDir="false" afterPath="$PROJECT_DIR$/devices/RecordRouting.go" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />

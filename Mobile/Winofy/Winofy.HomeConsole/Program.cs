@@ -12,6 +12,7 @@ using System.Runtime.CompilerServices;
 using Winofy.Connection.Devices;
 using Unosquare.WiringPi.Native;
 using Microsoft.Win32.SafeHandles;
+using System.Linq;
 
 namespace Winofy.HomeConsole
 {
@@ -70,9 +71,22 @@ namespace Winofy.HomeConsole
 
         static async Task Main(string[] args)
         {
+            if (args.Contains("-dht"))
+            {
+                TestDHT();
+                return;
+            }
+
+            if (args.Contains("-d7s"))
+            {
+                TestD7S();
+                return;
+            }
+
             HomeConfig config = GetConfig();
             var client = await PrepareClientAsync(config);
 
+            await client.RecordAsync(config.Device.Id, 40, Axes.XY, 30, 0.99f, WindowState.Opened);
             Pi.Init<BootstrapWiringPi>();
 
             using (var dht = DhtSensor.Create(config.DhtType, Pi.Gpio[config.DhtSensorPin]))
@@ -106,12 +120,97 @@ namespace Winofy.HomeConsole
                     var si = d7s.ReadSI();
                     var h = (float)humidity.Value;
                     var temp = (float)temperature.Value;
+                    Console.WriteLine($"温度:{temp}℃, 湿度:{h}%, 軸:{ax}, SI値:{si}");
 
                     if (!string.IsNullOrEmpty(devId))
                     {
                         var window = HandleTempAndSI(config, temp, si);
+
+                        switch (window)
+                        {
+                            case WindowState.Opened:
+                                Console.WriteLine("Window will be opened");
+                                break;
+                            case WindowState.Closed:
+                                Console.WriteLine("Window will be closed");
+                                break;
+                        }
+
                         await client.RecordAsync(devId, si, (Axes)ax, temp, h, window);
                     }
+                }
+            }
+        }
+
+        private static void TestD7S()
+        {
+            Console.Write("D7S I2C address : ");
+            var address = int.Parse(Console.ReadLine());
+
+            var d7s = new D7s(address);
+            d7s.Reset();
+            Console.WriteLine("Reset");
+
+            while (true)
+            {
+                var st = d7s.GetState();
+                if (st == D7sState.Normal)
+                {
+                    var si = d7s.ReadSI();
+                    Console.WriteLine("State : " + st + ", SI : " + si);
+                }
+                else
+                {
+                    Console.WriteLine("State : " + st);
+                }
+
+                Thread.Sleep(2000);
+            }
+        }
+
+        private static void TestDHT()
+        {
+            Pi.Init<BootstrapWiringPi>();
+
+            Console.WriteLine("Please provide the DHT sensor type");
+            Console.WriteLine("DHT11 = 0");
+            Console.WriteLine("DHT12 = 1");
+            Console.WriteLine("DHT21 = 2");
+            Console.WriteLine("DHT22 = 3");
+            Console.WriteLine("AM2301 = 4");
+            Console.WriteLine("AM2302 = 5");
+            Console.Write("DHT sensor type : ");
+
+            var type = (DhtType)int.Parse(Console.ReadLine());
+
+            Console.Write("DHT sensor pin : ");
+
+            var pin = (BcmPin)int.Parse(Console.ReadLine());
+
+            using (var dht = DhtSensor.Create(type, Pi.Gpio[pin]))
+            {
+                dht.Start();
+                Console.WriteLine($"{type} started");
+
+                bool exit = false;
+                dht.OnDataAvailable += (sener, e) =>
+                {
+                    if (e.IsValid)
+                    {
+                        Console.WriteLine("Received data from " + type);
+                        Console.WriteLine($"Temp: {e.Temperature}, Humidity: {e.HumidityPercentage}");
+                        dht.Stop();
+                        exit = true;
+                    }
+                    else
+                    {
+                        Console.WriteLine("Invalid data received");
+                    }
+                };
+
+                while (!exit)
+                {
+                    Thread.Yield();
                 }
             }
         }
