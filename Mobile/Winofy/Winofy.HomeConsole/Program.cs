@@ -73,8 +73,6 @@ namespace Winofy.HomeConsole
             HomeConfig config = GetConfig();
             var client = await PrepareClientAsync(config);
 
-            await client.RecordAsync(config.Device.Id, 10, Axes.XY, 30, 0.9f, WindowState.Closed);
-
             Pi.Init<BootstrapWiringPi>();
 
             using (var dht = DhtSensor.Create(config.DhtType, Pi.Gpio[config.DhtSensorPin]))

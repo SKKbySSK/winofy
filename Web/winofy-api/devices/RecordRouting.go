@@ -137,7 +137,7 @@ func (rec *RecordRouting) registerFunc(request *restful.Request, response *restf
 
 	var (
 		tempStr = strconv.FormatFloat(temp, 'f', 1, 64)
-		humidStr = strconv.FormatFloat(humid, 'f', 1, 64)
+		humidStr = strconv.FormatFloat(humid * 100, 'f', 1, 64)
 		siStr = strconv.FormatFloat(si, 'f', 3, 64)
 	)
 
