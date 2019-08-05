@@ -72,7 +72,7 @@ func (reg *RegisterRouting) registerFunc(request *restful.Request, response *res
 	}
 
 	exec := "INSERT INTO Devices (DeviceId, Username, Name, Description, Creation) VALUES(?, ?, ?, ?, NOW())"
-	r, err := sqlConnection.Exec(exec, dev.Id, *username, dev.Name, dev.Description)
+	_, err := sqlConnection.Exec(exec, dev.Id, *username, dev.Name, dev.Description)
 
 	if err != nil {
 		writeJsonResponse(response, getRegisterResult(false, results.DeviceRegisterUnknown), 500)

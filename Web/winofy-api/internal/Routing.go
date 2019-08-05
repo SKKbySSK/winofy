@@ -33,6 +33,7 @@ func getBodyParameters(request *restful.Request, names []string) ([]string, erro
 func getUsernameFromToken(token string) (*string, error) {
 	q := "SELECT Username FROM Tokens WHERE Token = ?"
 	rows, err := sqlConnection.Query(q, token)
+	defer rows.Close()
 
 	if err != nil {
 		return nil, err
