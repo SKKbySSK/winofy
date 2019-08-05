@@ -7,7 +7,7 @@ namespace Winofy.HomeConsole
 {
     public class D7sAddresses
     {
-        public const int Address = 0b10101011; //0x55
+        public const int Address = 0x55;
 
         public const int RegState = 0x1000;
 

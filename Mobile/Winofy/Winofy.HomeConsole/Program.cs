@@ -13,6 +13,7 @@ using Winofy.Connection.Devices;
 using Unosquare.WiringPi.Native;
 using Microsoft.Win32.SafeHandles;
 using System.Linq;
+using Unosquare.RaspberryIO.Abstractions.Native;
 
 namespace Winofy.HomeConsole
 {
@@ -31,6 +32,8 @@ namespace Winofy.HomeConsole
         public string AuthorizationToken { get; set; }
 
         public string Username { get; set; }
+
+        public int RecordingIntervalMs { get; set; } = 1000;
 
         public Threshold Threshold { get; set; } = new Threshold();
 
@@ -115,28 +118,36 @@ namespace Winofy.HomeConsole
                 var devId = config.Device?.Id;
                 while (true)
                 {
-                    Thread.Yield();
-                    var ax = d7s.GetAxis();
-                    var si = d7s.ReadSI();
-                    var h = (float)humidity.Value;
-                    var temp = (float)temperature.Value;
-                    Console.WriteLine($"温度:{temp}℃, 湿度:{h}%, 軸:{ax}, SI値:{si}");
+                    Thread.Sleep(config.RecordingIntervalMs);
 
-                    if (!string.IsNullOrEmpty(devId))
+                    try
                     {
-                        var window = HandleTempAndSI(config, temp, si);
+                        var ax = d7s.GetAxis();
+                        var si = d7s.ReadSI();
+                        var h = (float)humidity.Value;
+                        var temp = (float)temperature.Value;
+                        Console.WriteLine($"温度:{temp}℃, 湿度:{h}%, 軸:{ax}, SI値:{si}");
 
-                        switch (window)
+                        if (!string.IsNullOrEmpty(devId))
                         {
-                            case WindowState.Opened:
-                                Console.WriteLine("Window will be opened");
-                                break;
-                            case WindowState.Closed:
-                                Console.WriteLine("Window will be closed");
-                                break;
-                        }
+                            var window = HandleTempAndSI(config, temp, si);
 
-                        await client.RecordAsync(devId, si, (Axes)ax, temp, h, window);
+                            switch (window)
+                            {
+                                case WindowState.Opened:
+                                    Console.WriteLine("Window will be opened");
+                                    break;
+                                case WindowState.Closed:
+                                    Console.WriteLine("Window will be closed");
+                                    break;
+                            }
+
+                            await client.RecordAsync(devId, si, (Axes)ax, temp, h, window);
+                        }
+                    }
+                    catch (HardwareException hw)
+                    {
+                        Console.WriteLine("Failed to read SI value");
                     }
                 }
             }

@@ -33,6 +33,7 @@ func getBodyParameters(request *restful.Request, names []string) ([]string, erro
 func getUsernameFromToken(token string) (*string, error) {
 	q := "SELECT Username FROM Tokens WHERE Token = ?"
 	rows, err := sqlConnection.Query(q, token)
+	defer rows.Close()
 
 	if err != nil {
 		return nil, err
@@ -62,6 +63,7 @@ func isAuthorized(request *restful.Request) bool {
 
 	q := "SELECT Creation FROM Tokens WHERE Token = ?"
 	rows, err := sqlConnection.Query(q, token)
+	defer rows.Close()
 
 	if err != nil {
 		log.Println("Error occured while checking auhorizing status")
@@ -69,7 +71,6 @@ func isAuthorized(request *restful.Request) bool {
 		return false
 	}
 
-	defer rows.Close()
 
 	var creation time.Time
 	if rows.Next() {
